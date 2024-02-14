@@ -37,6 +37,6 @@ jobs:
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/key_zonu
         chmod 600 ~/.ssh/key_zonu
         ssh-keyscan -H 'server35.integrator.com.br' >> ~/.ssh/known_hosts
-        ssh -i ~/.ssh/key_zonu -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@server35.integrator.com.br -p 22 'pm2 start /zonuserver/server.js'
+        ssh -i ~/.ssh/key_zonu -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@server35.integrator.com.br -p 22 'pm2 start applications/zonuserver/server.js'
       env:
         SSH_PORT: 22
