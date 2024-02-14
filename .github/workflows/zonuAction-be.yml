@@ -29,7 +29,7 @@ jobs:
         port: 21
         protocol: ftp
         local-dir: ./
-        server-dir: /applications/zonuserver
+        server-dir: /applications/
 
     - name: Start application with PM2
       run: |
