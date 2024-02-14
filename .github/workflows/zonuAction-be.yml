@@ -24,12 +24,12 @@ jobs:
       uses: SamKirkland/FTP-Deploy-Action@4.1.0
       with:
         server: server35.integrator.com.br
-        username: ${{ secrets.FTP_USERNAME }} 
+        username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
         port: 21
         protocol: ftp
-        local-dir: ./ 
-        server-dir: /zonuserver/
+        local-dir: ./
+        server-dir: /applications/zonuserver
 
     - name: Start application with PM2
       run: |
