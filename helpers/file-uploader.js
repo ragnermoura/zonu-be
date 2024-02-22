@@ -9,10 +9,14 @@ const saveStorage = multer.diskStorage({
       folder = "logo";
     } else if (req.baseUrl.includes('user')) {
       folder = "avatar";
-    }else if (req.baseUrl.includes('perfil')) {
+    } else if (req.baseUrl.includes('condominio')) {
+      folder = "condominio";
+    } else if (req.baseUrl.includes('perfil')) {
       folder = "documentos";
+    } else if (req.baseUrl.includes('imovel')) {
+      folder = "imovel";
     }
-    
+
 
     cb(null, `public/${folder}/`);
   },

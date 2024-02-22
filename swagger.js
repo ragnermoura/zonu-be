@@ -7,10 +7,6 @@ const swaggerDefinition = {
     },
     servers: [
       {
-        url: 'http://localhost:3000',
-        description: 'Servidor Local',
-      },
-      {
         url: 'https://www.zonu.com.br/api',
         description: 'Servidor de Produção',
       },
