@@ -9,7 +9,7 @@ const obterCondominios = async (req, res) => {
     const condominios = await NovoCondominio.findAll({
       include: [
         { model: Usuario, as: 'Usuario' },
-        // Inclua outras associações aqui
+        
       ]
     });
     return res.status(200).send({ response: condominios });
@@ -23,7 +23,7 @@ const obterCondominioPorId = async (req, res) => {
     const condominio = await NovoCondominio.findByPk(req.params.id_condominio, {
       include: [
         { model: Usuario, as: 'Usuario' },
-        // Inclua outras associações aqui
+        
       ]
     });
     if (condominio) {
