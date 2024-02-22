@@ -2,7 +2,7 @@ const { Sequelize, DataTypes } = require("sequelize");
 const conn = require("../data/conn");
 
 const Info = require("./tb_info_imovel");
-const Propietario = require("./tb_propietario");
+const Proprietario = require("./tb_proprietario");
 const Condominio = require("./condominio/tb_novo_condominio");
 const Comodos = require("./tb_comodos");
 const Medidas = require("./tb_medidas");
@@ -32,7 +32,7 @@ const NovoImovel = conn.define("tb_novo_imovel", {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
-  id_propietario: {
+  id_proprietario: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
@@ -83,8 +83,8 @@ NovoImovel.belongsTo(Condominio, {
 });
 
 
-NovoImovel.belongsTo(Propietario, {
-  foreignKey: "id_propietario",
+NovoImovel.belongsTo(Proprietario, {
+  foreignKey: "id_proprietario",
   foreignKeyConstraint: true,
 });
 

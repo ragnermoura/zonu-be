@@ -4,8 +4,8 @@ const conn = require("../data/conn");
 const Usuario = require("./tb_usuarios");
 
 
-const Propietario = conn.define("tb_propietario", {
-  id_propietario: {
+const Proprietario = conn.define("tb_proprietario", {
+  id_proprietario: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true,
@@ -52,4 +52,4 @@ Propietario.belongsTo(Usuario, {
 });
 
 
-module.exports = Propietario;
+module.exports = Proprietario;

@@ -3,7 +3,7 @@ const conn = require("../data/conn");
 
 const Usuario = require("./tb_usuarios");
 
-const Caracteristica = conn.define("tb_caracteristicas", {
+const Caracteristica = conn.define("tb_caracteristica", {
     id_caracteristica: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
