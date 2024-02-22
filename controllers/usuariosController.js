@@ -97,8 +97,8 @@ const cadastrarUsuario = async (req, res, next) => {
       id_plano: req.body.id_plano,
       id_status: req.body.status,
       id_nivel: req.body.nivel
-     
-      
+
+
     });
     const response = {
       mensagem: "Usuário cadastrado com sucesso",
@@ -121,11 +121,64 @@ const cadastrarUsuario = async (req, res, next) => {
   }
 };
 
+const uploadImage = async (req, res) => {
+  const { id_user } = req.params;
+
+  const { filename } = req.file;
+
+  const update = {
+    avatar: `/avatar/${filename}`,
+  };
+
+  try {
+    await User.update(update, {
+      where: {
+        id_user,
+      },
+    });
+
+    return res.status(201).json({
+      success: true,
+      mensagem: "Imagem cadastrada com sucesso!",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Ocorreu um erro",
+    });
+  }
+};
+const getImage = async (req, res) => {
+  try {
+    const { id_user } = req.params;
+
+    const image = await User.findOne({
+      where: { id_user },
+      attributes: ["avatar"],
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Sucesso",
+      image,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Ocorreu um erro",
+    });
+  }
+};
+
 module.exports = {
   obterUsuarios,
   obterUsuarioPorId,
   atualizarUsuario,
   excluirUsuario,
   cadastrarUsuario,
-  atualizarDadosUsuario
+  atualizarDadosUsuario,
+  uploadImage,
+  getImage
 };
