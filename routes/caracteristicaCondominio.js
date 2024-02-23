@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const caracteristicasCondominioController = require("../controllers/caracteristicasCondominioController");
+const caracteristicasCondominioController = require("../controllers/caractCondController");
 
 router.get("/", caracteristicasCondominioController.obterCaracteristicasCondominio);
 router.get("/:id_caracteristica_condominio", caracteristicasCondominioController.obterCaracteristicaCondominioPorId);
