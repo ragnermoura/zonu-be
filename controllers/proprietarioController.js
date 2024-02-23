@@ -1,7 +1,7 @@
 const express = require('express');
 
 const Proprietario = require('../models/tb_proprietario');
-const Usuario = require('./tb_usuarios'); 
+const Usuario = require('../models/tb_usuarios'); 
 
 const obterProprietarios = async (req, res) => {
   try {
