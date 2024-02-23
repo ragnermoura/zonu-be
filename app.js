@@ -38,6 +38,9 @@ const rotaNovoCondominio = require('./routes/novoConcominio');
 const rotaNovoImovel = require('./routes/novoImovel');
 const rotaProprietario = require('./routes/proprietario');
 const rotaProximidade = require('./routes/proximidades');
+const rotaMedida = require('./routes/medidas');
+const rotaImagemImovel = require('./routes/imagemImovel');
+const rotaImagemCondominio = require('./routes/imagemCondominio');
 
 
 app.use(morgan('dev'));
@@ -71,24 +74,6 @@ app.use('/token', rotaToken);
 app.use('/usuarios', rotaUsuarios);
 app.use('/email', rotaEnvios);
 app.use('/file', rotaFile);
-app.use('/caracteristica', rotaCaracteristica);
-app.use('/caracteristica-Condominio', rotaCaracteristicaCondominio);
-app.use('/comodo', rotaComodo);
-app.use('/complemento', rotaComplemento);
-app.use('/descricao', rotaDescricao);
-app.use('/info', rotaInfo);
-app.use('/info-condominio', rotaInfoCondominio);
-app.use('/localizacao', rotaLocalizacao);
-app.use('/localizacao-condominio', rotaLocalizacaoCondominio);
-app.use('/medidas', rotaMedidas);
-app.use('/minhas-caract-condominio', rotaMinhasCaractCondominio);
-app.use('/minhas-caracteristicas', rotaMinhasCaracteristicas);
-app.use('/proximidades', rotaMinhasProximidades);
-app.use('/preco', rotaPreco);
-app.use('/novo-condominio', rotaNovoCondominio);
-app.use('/novo-imovel', rotaNovoImovel);
-app.use('/proprietario', rotaProprietario);
-app.use('/proximidade', rotaProximidade);
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 
