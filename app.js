@@ -28,6 +28,9 @@ const rotaDescricao = require('./routes/descricao');
 const rotaInfo = require('./routes/infoImovel');
 const rotaInfoCondominio = require('./routes/infoCondominio');
 const rotaLocalizacao = require('./routes/localizacao');
+const rotaMedida = require('./routes/medidas');
+const rotaImagemImovel = require('./routes/imagemImovel');
+const rotaImagemCondominio = require('./routes/imagemCondominio');
 
 
 app.use(morgan('dev'));
@@ -61,6 +64,16 @@ app.use('/token', rotaToken);
 app.use('/usuarios', rotaUsuarios);
 app.use('/email', rotaEnvios);
 app.use('/file', rotaFile);
+app.use('/caracteristica', rotaCaracteristica);
+app.use('/caracteristica-condominio', rotaCaracteristicaCondominio);
+
+
+
+
+
+
+
+
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 
