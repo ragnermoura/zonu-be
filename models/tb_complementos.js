@@ -25,7 +25,7 @@ const Complemento = conn.define("tb_complemento", {
 }, { freezeTableName: true });
 
 
-Info.belongsTo(Usuario, {
+Complemento.belongsTo(Usuario, {
   foreignKey: "id_user",
   foreignKeyConstraint: true,
 });

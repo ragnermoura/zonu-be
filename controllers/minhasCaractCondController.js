@@ -1,6 +1,6 @@
 const express = require('express');
 
-const MinhasCaracteristicasCondominio = require('../models/condominio/tb_minhas_caracteristicas_condominio'); 
+const MinhasCaracteristicasCondominio = require('../models/condominio/tb_minhas_caracateristicas_condominio'); 
 const CaracteristicasCondominio = require('../models/condominio/tb_caracteristica_condominio'); 
 
 const obterMinhasCaracteristicasCondominio = async (req, res) => {

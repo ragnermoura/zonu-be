@@ -46,7 +46,7 @@ const Proprietario = conn.define("tb_proprietario", {
 }, { freezeTableName: true });
 
 
-Propietario.belongsTo(Usuario, {
+Proprietario.belongsTo(Usuario, {
   foreignKey: "id_user",
   foreignKeyConstraint: true,
 });

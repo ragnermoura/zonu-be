@@ -1,7 +1,7 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const conn = require("../data/conn");
 
-const Caracteristica = require("./tb_catacteristica");
+const Caracteristica = require("./tb_caracteristica");
 
 const MinhasCaracteristicas = conn.define(
     "tb_minhas_caracteristicas",

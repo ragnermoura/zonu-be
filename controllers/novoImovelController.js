@@ -1,17 +1,17 @@
 const express = require('express');
 
 const NovoImovel = require('../models/tb_novo_imovel');
-const Info = require('./tb_info_imovel');
-const Proprietario = require('./tb_proprietario');
-const Condominio = require('./condominio/tb_novo_condominio');
-const Comodos = require('./tb_comodos');
-const Medidas = require('./tb_medidas');
-const Preco = require('./tb_preco');
-const MinhasCaracteristicas = require('./tb_minhas_caracteristicas'); 
-const Localizacao = require('./tb_localizacao');
-const Proximidades = require('./tb_minhas_proximidades');
-const Descricao = require('./tb_descricao');
-const Complemento = require('./tb_complementos');
+const Info = require('../models/tb_info_imovel');
+const Proprietario = require('../models/tb_proprietario');
+const Condominio = require('../models/condominio/tb_novo_condominio');
+const Comodos = require('../models/tb_comodos');
+const Medidas = require('../models/tb_medidas');
+const Preco = require('../models/tb_preco');
+const MinhasCaracteristicas = require('../models/tb_minhas_caracteristicas'); 
+const Localizacao = require('../models/tb_localizacao');
+const Proximidades = require('../models/tb_minhas_proximidades');
+const Descricao = require('../models/tb_descricao');
+const Complemento = require('../models/tb_complementos');
 
 const obterImoveis = async (req, res) => {
   try {
