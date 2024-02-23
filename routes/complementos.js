@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const complementoController = require("../controllers/complementoController");
+const complementoController = require("../controllers/complementosController");
 
 router.get("/", complementoController.obterComplementos);
 router.get("/:id_complemento", complementoController.obterComplementoPorId);

@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const localizacaoCondominioController = require("../controllers/localizacaoCondominioController");
+const localizacaoCondominioController = require("../controllers/localCondController");
 
 router.get("/", localizacaoCondominioController.obterLocalizacoesCondominio);
 router.get("/:id_localizacao_condominio", localizacaoCondominioController.obterLocalizacaoCondominioPorId);

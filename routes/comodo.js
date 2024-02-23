@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const comodosController = require("../controllers/comodosController");
+const comodosController = require("../controllers/comodoController");
 
 router.get("/", comodosController.obterComodos);
 router.get("/:id_comodos", comodosController.obterComodoPorId);
