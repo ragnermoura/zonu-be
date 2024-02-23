@@ -28,6 +28,16 @@ const rotaDescricao = require('./routes/descricao');
 const rotaInfo = require('./routes/infoImovel');
 const rotaInfoCondominio = require('./routes/infoCondominio');
 const rotaLocalizacao = require('./routes/localizacao');
+const rotaLocalizacaoCondominio = require('./routes/localiCondominio');
+const rotaMedidas = require('./routes/medidas');
+const rotaMinhasCaractCondominio = require('./routes/minhasCaractCondominio');
+const rotaMinhasCaracteristicas = require('./routes/minhasCaracteristicas');
+const rotaMinhasProximidades = require('./routes/minhasProximidades');
+const rotaPreco = require('./routes/preco');
+const rotaNovoCondominio = require('./routes/novoConcominio');
+const rotaNovoImovel = require('./routes/novoImovel');
+const rotaProprietario = require('./routes/proprietario');
+const rotaProximidade = require('./routes/proximidades');
 
 
 app.use(morgan('dev'));
@@ -61,6 +71,24 @@ app.use('/token', rotaToken);
 app.use('/usuarios', rotaUsuarios);
 app.use('/email', rotaEnvios);
 app.use('/file', rotaFile);
+app.use('/caracteristica', rotaCaracteristica);
+app.use('/caracteristica-Condominio', rotaCaracteristicaCondominio);
+app.use('/comodo', rotaComodo);
+app.use('/complemento', rotaComplemento);
+app.use('/descricao', rotaDescricao);
+app.use('/info', rotaInfo);
+app.use('/info-condominio', rotaInfoCondominio);
+app.use('/localizacao', rotaLocalizacao);
+app.use('/localizacao-condominio', rotaLocalizacaoCondominio);
+app.use('/medidas', rotaMedidas);
+app.use('/minhas-caract-condominio', rotaMinhasCaractCondominio);
+app.use('/minhas-caracteristicas', rotaMinhasCaracteristicas);
+app.use('/proximidades', rotaMinhasProximidades);
+app.use('/preco', rotaPreco);
+app.use('/novo-condominio', rotaNovoCondominio);
+app.use('/novo-imovel', rotaNovoImovel);
+app.use('/proprietario', rotaProprietario);
+app.use('/proximidade', rotaProximidade);
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 
