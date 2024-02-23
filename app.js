@@ -20,6 +20,15 @@ const rotaToken = require('./routes/token');
 const rotaUsuarios = require('./routes/usuario');
 const rotaFile = require('./routes/file');
 const rotaEnvios = require('./routes/envio');
+const rotaCaracteristica = require('./routes/caracteristica');
+const rotaCaracteristicaCondominio = require('./routes/caracteristicaCondominio');
+const rotaComodo = require('./routes/comodo');
+const rotaComplemento = require('./routes/complementos');
+const rotaDescricao = require('./routes/descricao');
+const rotaInfo = require('./routes/infoImovel');
+const rotaInfoCondominio = require('./routes/infoCondominio');
+const rotaLocalizacao = require('./routes/localizacao');
+
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));
