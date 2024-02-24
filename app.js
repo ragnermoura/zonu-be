@@ -41,7 +41,7 @@ const rotaProximidades = require('./routes/proximidades');
 const rotaMedida = require('./routes/medidas');
 const rotaImagemImovel = require('./routes/imagemImovel');
 const rotaImagemCondominio = require('./routes/imagemCondominio');
-const rotaEnvios = require('./routes/imagemCondominio');
+
 
 
 app.use(morgan('dev'));
@@ -96,7 +96,6 @@ app.use('/proximidades', rotaProximidades);
 app.use('/medidas', rotaMedida);
 app.use('/imagem-imovel', rotaImagemImovel);
 app.use('/imagem-condominio', rotaImagemCondominio);
-app.use('/email', rotaEnvios);
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 
