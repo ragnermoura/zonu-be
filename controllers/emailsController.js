@@ -5,16 +5,13 @@ require('dotenv').config();
 
 
 const enviarBoasVindas = async (req, res) => {
-    const { email, nome, id, perfil } = req.body;
+    const { email, nome } = req.body;
     try {
-        const htmlFilePath = path.join(__dirname, '../template/welcome/index.html');
+        const htmlFilePath = path.join(__dirname, '../template/boasvindas/index.html');
         let htmlContent = await fs.readFile(htmlFilePath, "utf8");
 
         htmlContent = htmlContent
             .replace("{{nome}}", nome)
-            .replace("{{emailclient}}", email)
-            .replace("{{id}}", id)
-            .replace("{{perfil}}", perfil)
 
         config.transporter
 
