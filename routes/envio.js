@@ -8,7 +8,6 @@ router.post("/admin/envio-doc", emailController.enviarDocAnfitriao);
 router.post("/client/troca-senha", emailController.enviarAlteraSenha);
 router.post("/client/novo-acesso", emailController.enviarEmailAcesso);
 
-
 /**
  * @swagger
  * tags:
