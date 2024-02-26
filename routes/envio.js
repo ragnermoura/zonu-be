@@ -4,10 +4,9 @@ const emailController = require("../controllers/emailsController");
 
 router.post("/boas-vindas", emailController.enviarBoasVindas);
 router.post("/senha", emailController.enviarSenha);
-router.post("/admin/novo-cadastro", emailController.enviarNovoCadastroAnfitriao);
-router.post("/admin/envio-doc", emailController.enviarDocAnfitriao);
-router.post("/client/troca-senha", emailController.enviarAlteraSenha);
-router.post("/client/novo-acesso", emailController.enviarEmailAcesso);
+router.post("/imovel", emailController.enviarNovoImovel);
+router.post("/acesso", emailController.enviarEmailAcesso);
+
 
 /**
  * @swagger
