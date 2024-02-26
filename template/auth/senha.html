@@ -11,25 +11,27 @@
             box-sizing: border-box;
             text-decoration: none;
             list-style: none;
+            margin: 0;
+            padding: 0;
         }
         body{
-            margin: 0;
-            display: flex;
-            justify-content: center;
+            margin: 0 auto;
+            display: block;
             font-family: "Inter" !important;
             font-optical-sizing: auto;
             font-style: normal;
             font-variation-settings:
               "slnt" 0;
 
+              background: #F7F8FA;
+
+
         }
 
         .container{
-            display: flex;
-            position: relative;
-            flex-direction: column;
-            align-items: center;
-            padding: 0px 0px 40px 0px;
+            display: block;
+            margin: 0 auto;
+            padding: 40px 0px 40px 0px;
             bottom: 0 !important;
             width: 648px;
             height: 100%;
@@ -48,11 +50,9 @@
             width: 568px;
             min-height: 100vh;
 
-            margin: -200px;
+            margin: 40px auto ;
             padding: 40px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            display: block;
             gap: 24px;
             text-align: left;
 
@@ -64,11 +64,15 @@
 
         .logo{
             width: 206px;
-            margin-top: 40px;
+            margin: 0 auto ;
+            display: block;
         }
 
         .image{
             max-width: 412px;
+            margin: 0 auto 40px;
+            display: block;
+
         }
 
         .title{
@@ -84,6 +88,8 @@
         .msg{
             font-size: 16px;
             line-height: 191%;
+            margin-bottom: 40px;
+            color: black !important;
         }
 
         .card{
@@ -93,6 +99,7 @@
             align-items: center;
             margin-bottom: 25px;
             padding-right:10px;
+            color: black !important;
         }
 
         .icon{
@@ -104,15 +111,11 @@
         }
 
         .btn{
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-            align-items: center;
+            display: block;
+            text-align: center;
             padding: 12px 24px;
             gap: 8px;
-
-            width: 127px;
-            height: 48px;
+            margin-bottom: 20px;
 
             background: #000000;
             box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.06), 0px 4px 6px -1px rgba(0, 0, 0, 0.1);
@@ -122,13 +125,16 @@
         }
 
         .link{
+            display: block;
             font-weight: 700;
             font-size: 16px;
             color: #E55749;
+            text-align: center;
         }
 
         footer{
-            margin-top: 225px;
+            display: block;
+            margin: 0 auto;
             width: 568px;
             text-align: center;
             font-size: 12px;
@@ -137,7 +143,9 @@
         }
 
         .full{
-            max-width: 100%px;
+            max-width: 100%;
+            display: block;
+            text-align: center;
         }
 
         .full a{
@@ -158,9 +166,7 @@
 <body>
 
     <div class="container">
-        <div class="box">
             <img class="logo" src="https://zonu.com.br/emailmkt/logo.png" alt="">
-        </div>
 
         <div class="content">
             <img class="image" src="https://zonu.com.br/emailmkt/img_senha.png" alt="">
@@ -217,7 +223,7 @@
             <div class="full">
                 <ul>
                     <li>
-                        <a href="">Facebook</a>
+                        <a href="#">Facebook</a>
                         <a href="">Linkedin</a>
                         <a href="">Instagram</a>
                     </li>
@@ -234,7 +240,7 @@
                     <li>
                         <a href="">Termos & Condições</a>
                         <a href="">Política de Privacidade</a>
-                        <a href="">Contato</a>
+                        <a href="#">Contato</a>
                     </li>
                 </ul>
             </div>
