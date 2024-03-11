@@ -18,27 +18,15 @@ const Proprietario = conn.define("tb_proprietario", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  data_nascimento: {
+  documento: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  categoria: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-  },
-  telefone1: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  telefone2: {
+  telefone: {
     type: DataTypes.STRING,
     allowNull: false,
   },
   id_user: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-  },
-  id_corretor: {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
