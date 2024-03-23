@@ -1,8 +1,6 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const conn = require("../data/conn");
 
-const Usuario = require("./tb_usuarios");
-
 const Info = conn.define("tb_info_imovel", {
   id_info: {
     type: DataTypes.INTEGER,
@@ -69,18 +67,8 @@ const Info = conn.define("tb_info_imovel", {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  id_user: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-  },
  
 }, { freezeTableName: true });
-
-
-Info.belongsTo(Usuario, {
-  foreignKey: "id_user",
-  foreignKeyConstraint: true,
-});
 
 
 module.exports = Info;

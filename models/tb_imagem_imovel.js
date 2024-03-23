@@ -1,7 +1,6 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const conn = require("../data/conn");
 
-const Usuario = require("./tb_usuarios");
 const NovoImovel = require("./tb_novo_imovel");
 
 const ImagemImovel = conn.define("tb_imagem_imovel", {
@@ -18,24 +17,17 @@ const ImagemImovel = conn.define("tb_imagem_imovel", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  id_novo_imovel: {
+  id_imovel: {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
-  id_user: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-  },
+
  
 }, { freezeTableName: true });
 
 
-ImagemImovel.belongsTo(Usuario, {
-  foreignKey: "id_user",
-  foreignKeyConstraint: true,
-});
 ImagemImovel.belongsTo(NovoImovel, {
-    foreignKey: "id_novo_imovel",
+    foreignKey: "id_imovel",
     foreignKeyConstraint: true,
   });
 

@@ -1,7 +1,6 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const conn = require("../data/conn");
 
-const Usuario = require("./tb_usuarios");
 
 const Complemento = conn.define("tb_complemento", {
   id_complemento: {
@@ -17,18 +16,10 @@ const Complemento = conn.define("tb_complemento", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  id_user: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-  },
- 
 }, { freezeTableName: true });
 
 
-Complemento.belongsTo(Usuario, {
-  foreignKey: "id_user",
-  foreignKeyConstraint: true,
-});
+
 
 
 module.exports = Complemento;

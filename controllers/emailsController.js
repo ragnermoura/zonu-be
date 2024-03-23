@@ -162,7 +162,6 @@ const enviarNovoImovel = async (req, res) => {
 };
 
 
-
 module.exports = {
     enviarBoasVindas,
     enviarNovoImovel,

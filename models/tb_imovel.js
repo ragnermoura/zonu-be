@@ -7,15 +7,17 @@ const Condominio = require("./condominio/tb_novo_condominio");
 const Comodos = require("./tb_comodos");
 const Medidas = require("./tb_medidas");
 const Preco = require("./tb_preco");
-const MinhsaCaracteristicas = require("./tb_minhas_caracteristicas");
+const Caracteristicas = require("./tb_imovel_caracteristica");
 const Localizacao = require("./tb_localizacao");
-const Proximidades = require("./tb_minhas_proximidades");
+const Proximidades = require("./tb_imovel_proximidades");
 const Descricao = require("./tb_descricao");
 const Complemento = require("./tb_complementos");
+const Usuario = require("./tb_usuarios");
+const Publicacao = require("./tb_publicacao");
 
 
 const NovoImovel = conn.define("tb_novo_imovel", {
-  id_novo_imovel: {
+  id_imovel: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true,
@@ -48,7 +50,7 @@ const NovoImovel = conn.define("tb_novo_imovel", {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
-  id_minhas_caracteristicas: {
+  id_caracteristica_imovel: {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
@@ -56,7 +58,7 @@ const NovoImovel = conn.define("tb_novo_imovel", {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
-  id_minhas_proximidades: {
+  id_proximidades_imovel: {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
@@ -65,6 +67,14 @@ const NovoImovel = conn.define("tb_novo_imovel", {
     allowNull: true,
   },
   id_complemento: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  id_publicacao: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  id_user: {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
@@ -81,7 +91,6 @@ NovoImovel.belongsTo(Condominio, {
   foreignKey: "id_condominio",
   foreignKeyConstraint: true,
 });
-
 
 NovoImovel.belongsTo(Proprietario, {
   foreignKey: "id_proprietario",
@@ -103,8 +112,8 @@ NovoImovel.belongsTo(Preco, {
   foreignKeyConstraint: true,
 });
 
-NovoImovel.belongsTo(MinhsaCaracteristicas, {
-  foreignKey: "id_minhas_caracteristicas",
+NovoImovel.belongsTo(Caracteristicas, {
+  foreignKey: "id_imovel_caracteristica",
   foreignKeyConstraint: true,
 });
 
@@ -114,7 +123,7 @@ NovoImovel.belongsTo(Localizacao, {
 });
 
 NovoImovel.belongsTo(Proximidades, {
-  foreignKey: "id_minhas_proximidades",
+  foreignKey: "id_imovel_proximidades",
   foreignKeyConstraint: true,
 });
 
@@ -125,6 +134,16 @@ NovoImovel.belongsTo(Descricao, {
 
 NovoImovel.belongsTo(Complemento, {
   foreignKey: "id_complemento",
+  foreignKeyConstraint: true,
+});
+
+NovoImovel.belongsTo(Publicacao, {
+  foreignKey: "id_publicacao",
+  foreignKeyConstraint: true,
+});
+
+NovoImovel.belongsTo(Usuario, {
+  foreignKey: "id_user",
   foreignKeyConstraint: true,
 });
 

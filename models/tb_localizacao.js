@@ -1,8 +1,6 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const conn = require("../data/conn");
 
-const Usuario = require("./tb_usuarios");
-
 const Localizacao = conn.define("tb_localizacao", {
   id_localizacao: {
     type: DataTypes.INTEGER,
@@ -26,10 +24,6 @@ const Localizacao = conn.define("tb_localizacao", {
     allowNull: true,
   },
   bairro: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
-  zona: {
     type: DataTypes.STRING,
     allowNull: true,
   },
@@ -97,22 +91,10 @@ const Localizacao = conn.define("tb_localizacao", {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  mostrar_localizacao_site: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
 
-  id_user: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-},
 
 }, { freezeTableName: true });
 
-Localizacao.belongsTo(Usuario, {
-  foreignKey: "id_user",
-  foreignKeyConstraint: true,
-});
 
 
 

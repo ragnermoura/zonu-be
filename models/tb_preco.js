@@ -1,8 +1,6 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const conn = require("../data/conn");
 
-const Usuario = require("./tb_usuarios");
-
 const Preco = conn.define("tb_preco", {
   id_preco: {
     type: DataTypes.INTEGER,
@@ -45,7 +43,7 @@ const Preco = conn.define("tb_preco", {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  minhacasa_minhavisa: {
+  minhacasa_minhavida: {
     type: DataTypes.STRING,
     allowNull: true,
   },
@@ -65,19 +63,9 @@ const Preco = conn.define("tb_preco", {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  id_user: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-  },
- 
+
 
 }, { freezeTableName: true });
-
-
-Preco.belongsTo(Usuario, {
-  foreignKey: "id_user",
-  foreignKeyConstraint: true,
-});
 
 
 

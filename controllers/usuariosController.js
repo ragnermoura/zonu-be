@@ -1,9 +1,105 @@
 const bcrypt = require("bcrypt");
-
+const { v4: uuidv4 } = require("uuid");
+const Code = require("../models/tb_code");
+const Token = require("../models/tb_token");
 const User = require("../models/tb_usuarios");
+const Perfil = require("../models/tb_perfil");
 
-require('dotenv').config();
+require("dotenv").config();
 
+const cadastrarUsuario = async (req, res, next) => {
+  try {
+    const perfilExistente = await Perfil.findOne({
+      where: { cnpj: req.body.cnpj },
+    });
+    if (perfilExistente) {
+      return res.status(409).send({
+        mensagem: "Cnpj já cadastrado, por favor insira um CNPJ diferente!",
+      });
+    }
+
+    const usuarioExistente = await User.findOne({
+      where: { email: req.body.email },
+    });
+    if (usuarioExistente) {
+      return res.status(409).send({
+        mensagem: "Email já cadastrado, por favor insira um email diferente!",
+      });
+    }
+    const hashedPassword = await bcrypt.hash(req.body.senha, 10);
+    const filename = req.file ? req.file.filename : "default-avatar.png";
+    const filenamecapa = req.files.capa
+      ? req.files.capa[0].filename
+      : "default-capa.png";
+    const filenamelogo = req.files.logo
+      ? req.files.logo[0].filename
+      : "default-logo.png";
+
+    const novoUsuario = await User.create({
+      nome: req.body.nome,
+      sobrenome: req.body.sobrenome,
+      email: req.body.email,
+      senha: hashedPassword,
+      avatar: `/avatar/${filename}`,
+      id_plano: req.body.id_plano,
+      id_status: req.body.status,
+      id_nivel: req.body.nivel,
+    });
+
+    const novoperfil = await Perfil.create({
+      razao_social: req.body.razao_social,
+      cnpj: req.body.cnpj,
+      cpf: req.body.cpf,
+      telefone: req.body.telefone,
+      telefone2: req.body.telefone2,
+      aniversario: req.body.aniversario,
+      cep: req.body.cep,
+      logo: `/logo/${filenamelogo}`,
+      capa: `/capa/${filenamecapa}`,
+      endereco: req.body.endereco,
+      tem_cnpj: req.body.tem_cnpj,
+      termos: req.body.termos,
+      id_user: novoUsuario.id_user,
+    });
+
+    const codigoAleatorio = Math.floor(1000 + Math.random() * 9000).toString();
+
+    const code = await Code.create({
+      type_code: 1,
+      code: codigoAleatorio,
+      id_user: novoUsuario.id_user,
+    });
+
+    const tokenUsuario = await Token.create({
+      id_user: novoUsuario.id_user,
+      token: uuidv4(),
+    });
+
+    const response = {
+      mensagem: "Usuário cadastrado com sucesso",
+      usuarioCriado: {
+        id_user: novoUsuario.id_user,
+        nome: novoUsuario.nome,
+        email: novoUsuario.email,
+        nivel: novoUsuario.id_nivel,
+        id_perfil: novoperfil.id_perfil,
+        razao_social: novoperfil.razao_social,
+        cnpj: novoperfil.cnpj,
+        token_unico: tokenUsuario.token,
+        code: code.code,
+        request: {
+          tipo: "GET",
+          descricao: "Pesquisar um usuário",
+          url: `https://trustchecker.com.br/api/usuarios/${novoUsuario.id_user}`,
+        },
+      },
+    };
+
+    return res.status(202).send(response);
+  } catch (error) {
+    return res.status(500).send({ error: error.message });
+  }
+};
 const obterUsuarios = async (req, res, next) => {
   try {
     const usuarios = await User.findAll();
@@ -75,102 +171,6 @@ const excluirUsuario = async (req, res, next) => {
     return res.status(500).send({ error: error.message });
   }
 };
-const cadastrarUsuario = async (req, res, next) => {
-  try {
-    const usuarioExistente = await User.findOne({
-      where: { email: req.body.email },
-    });
-    if (usuarioExistente) {
-      return res
-        .status(409)
-        .send({
-          mensagem: "Email já cadastrado, por favor insira um email diferente!",
-        });
-    }
-    const hashedPassword = await bcrypt.hash(req.body.senha, 10);
-
-    const novoUsuario = await User.create({
-      nome: req.body.nome,
-      sobrenome: req.body.sobrenome,
-      email: req.body.email,
-      senha: hashedPassword,
-      id_plano: req.body.id_plano,
-      id_status: req.body.status,
-      id_nivel: req.body.nivel
-
-
-    });
-    const response = {
-      mensagem: "Usuário cadastrado com sucesso",
-      usuarioCriado: {
-        id_user: novoUsuario.id_user,
-        nome: novoUsuario.nome,
-        email: novoUsuario.email,
-        nivel: novoUsuario.id_nivel,
-        request: {
-          tipo: "GET",
-          descricao: "Pesquisar um usuário",
-          url: `https://trustchecker.com.br/api//usuarios/${novoUsuario.id_user}`,
-        },
-      },
-    };
-
-    return res.status(202).send(response);
-  } catch (error) {
-    return res.status(500).send({ error: error.message });
-  }
-};
-
-const uploadImage = async (req, res) => {
-  const { id_user } = req.params;
-
-  const { filename } = req.file;
-
-  const update = {
-    avatar: `/avatar/${filename}`,
-  };
-
-  try {
-    await User.update(update, {
-      where: {
-        id_user,
-      },
-    });
-
-    return res.status(201).json({
-      success: true,
-      mensagem: "Imagem cadastrada com sucesso!",
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      success: false,
-      message: "Ocorreu um erro",
-    });
-  }
-};
-const getImage = async (req, res) => {
-  try {
-    const { id_user } = req.params;
-
-    const image = await User.findOne({
-      where: { id_user },
-      attributes: ["avatar"],
-    });
-
-    res.status(200).json({
-      success: true,
-      message: "Sucesso",
-      image,
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      success: false,
-      message: "Ocorreu um erro",
-    });
-  }
-};
 
 module.exports = {
   obterUsuarios,
@@ -179,6 +179,4 @@ module.exports = {
   excluirUsuario,
   cadastrarUsuario,
   atualizarDadosUsuario,
-  uploadImage,
-  getImage
-};
+}

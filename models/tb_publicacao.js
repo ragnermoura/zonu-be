@@ -1,28 +1,37 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const conn = require("../data/conn");
 
-const Medidas = conn.define("tb_medidas", {
-  id_medidas: {
+const Imovel = require("./tb_imovel");
+
+const Publicacao = conn.define("tb_publicacao", {
+  id_publicacao: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true,
   },
-  
-  area_contruida: {
+  mostrar_imovel_publi: {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  area_privativa: {
+  tarja_imovel_site_publi: {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  area_total: {
+  cor_tarja_publi: {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  id_imovel: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+},
  
 
 }, { freezeTableName: true });
 
+Publicacao.belongsTo(Imovel, {
+  foreignKey: "id_imovel",
+  foreignKeyConstraint: true,
+});
 
-module.exports = Medidas;
+module.exports = Publicacao;

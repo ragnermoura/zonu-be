@@ -1,21 +1,27 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const conn = require("../data/conn");
 
-const User = require("./tb_usuarios");
+const Usuario = require("./tb_usuarios");
 
-const Token = conn.define(
-  "tb_token",
+const Code = conn.define(
+  "tb_code",
   {
-    id_token: {
+    id_code: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
-      allowNull: false, 
       primaryKey: true,
     },
-    token: {
-      type: DataTypes.STRING,
+    type_code: {
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
+    code: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        validate: {
+          is: /^[0-9]{4}$/,
+        }
+      },
     id_user: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -24,9 +30,9 @@ const Token = conn.define(
   { freezeTableName: true }
 );
 
-Token.belongsTo(User, {
+Code.belongsTo(Usuario, {
   foreignKey: "id_user",
   foreignKeyConstraint: true,
 });
 
-module.exports = Token;
+module.exports = Code;
