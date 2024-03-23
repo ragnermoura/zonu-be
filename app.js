@@ -18,13 +18,10 @@ const rotaStatus = require('./routes/status');
 const rotaUsuarios = require('./routes/usuario');
 const rotaEnvios = require('./routes/envio');
 const rotaCaracteristica = require('./routes/caracteristica');
-const rotaCaracteristicaCondominio = require('./routes/caracteristicaCondominio');
 const rotaProximidades = require('./routes/Proximidades');
 const rotaNovoCondominio = require('./routes/novoConcominio');
 const rotaNovoImovel = require('./routes/novoImovel');
 const rotaProprietario = require('./routes/proprietario');
-const rotaImagemImovel = require('./routes/imagemImovel');
-const rotaImagemCondominio = require('./routes/imagemCondominio');
 
 
 
@@ -57,13 +54,11 @@ app.use('/status', rotaStatus);
 app.use('/usuarios', rotaUsuarios);
 app.use('/email', rotaEnvios);
 app.use('/caracteristica', rotaCaracteristica);
-app.use('/caracteristica-condominio', rotaCaracteristicaCondominio);
 app.use('/proximidades', rotaProximidades);
 app.use('/condominio', rotaNovoCondominio);
 app.use('/imovel', rotaNovoImovel);
 app.use('/proprietario', rotaProprietario);
-app.use('/imagem-imovel', rotaImagemImovel);
-app.use('/imagem-condominio', rotaImagemCondominio);
+
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 

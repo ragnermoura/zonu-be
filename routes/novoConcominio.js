@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const novoCondominioController = require("../controllers/novoCondController");
+const novoCondominioController = require("../controllers/condominioController");
 
 router.get("/", novoCondominioController.obterCondominios);
 router.get("/:id_condominio", novoCondominioController.obterCondominioPorId);

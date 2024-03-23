@@ -1,35 +1,30 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const conn = require("../data/conn");
 
-const NovoImovel = require("./tb_imovel");
+const Usuario = require("./tb_usuarios");
 
-const ImagemImovel = conn.define("tb_imagem_imovel", {
-  id_imagem: {
+const Condominio = conn.define("tb_condominio", {
+  id_condominio: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true,
   },
-  foto: {
+  nome_condominio: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  status: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  id_imovel: {
+  id_user: {
     type: DataTypes.INTEGER,
     allowNull: true,
-  },
+},
 
- 
+
 }, { freezeTableName: true });
 
 
-ImagemImovel.belongsTo(NovoImovel, {
-    foreignKey: "id_imovel",
+Condominio.belongsTo(Usuario, {
+    foreignKey: "id_user",
     foreignKeyConstraint: true,
-  });
+});
 
-
-module.exports = ImagemImovel;
+module.exports = Condominio;

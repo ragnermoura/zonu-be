@@ -1,31 +1,21 @@
 const express = require('express');
 
-const NovoCondominio = require('../models/condominio/tb_novo_condominio'); 
-const Usuario = require('../models/tb_usuarios'); 
+const Condominio = require('../models/tb_condominio');
 
-
-const obterCondominios = async (req, res) => {
+// Obtém todos os condomínios
+const obterCondominios = async (req, res, next) => {
   try {
-    const condominios = await NovoCondominio.findAll({
-      include: [
-        { model: Usuario, as: 'Usuario' },
-        
-      ]
-    });
+    const condominios = await Condominio.findAll();
     return res.status(200).send({ response: condominios });
   } catch (error) {
     return res.status(500).send({ error: error.message });
   }
 };
 
-const obterCondominioPorId = async (req, res) => {
+// Obtém um condomínio pelo ID
+const obterCondominioPorId = async (req, res, next) => {
   try {
-    const condominio = await NovoCondominio.findByPk(req.params.id_condominio, {
-      include: [
-        { model: Usuario, as: 'Usuario' },
-        
-      ]
-    });
+    const condominio = await Condominio.findByPk(req.params.id_condominio);
     if (condominio) {
       return res.status(200).send({ response: condominio });
     } else {
@@ -36,21 +26,23 @@ const obterCondominioPorId = async (req, res) => {
   }
 };
 
-const criarCondominio = async (req, res) => {
+// Cria um novo condomínio
+const criarCondominio = async (req, res, next) => {
   try {
-    const novoCondominio = await NovoCondominio.create(req.body);
+    const novoCondominio = await Condominio.create(req.body);
     return res.status(201).send({ response: novoCondominio });
   } catch (error) {
     return res.status(500).send({ error: error.message });
   }
 };
 
-const atualizarCondominio = async (req, res) => {
+// Atualiza um condomínio pelo ID
+const atualizarCondominio = async (req, res, next) => {
   try {
-    const condominioAtualizado = await NovoCondominio.update(req.body, {
+    const atualizado = await Condominio.update(req.body, {
       where: { id_condominio: req.params.id_condominio }
     });
-    if (condominioAtualizado) {
+    if (atualizado[0]) {
       return res.status(200).send({ message: 'Condomínio atualizado com sucesso' });
     } else {
       return res.status(404).send({ message: 'Condomínio não encontrado' });
@@ -60,9 +52,10 @@ const atualizarCondominio = async (req, res) => {
   }
 };
 
-const deletarCondominio = async (req, res) => {
+// Deleta um condomínio pelo ID
+const deletarCondominio = async (req, res, next) => {
   try {
-    const deletado = await NovoCondominio.destroy({
+    const deletado = await Condominio.destroy({
       where: { id_condominio: req.params.id_condominio }
     });
     if (deletado) {
