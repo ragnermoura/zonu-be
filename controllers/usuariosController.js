@@ -49,16 +49,11 @@ const cadastrarUsuario = async (req, res, next) => {
     const novoperfil = await Perfil.create({
       razao_social: req.body.razao_social,
       cnpj: req.body.cnpj,
-      cpf: req.body.cpf,
       telefone: req.body.telefone,
-      telefone2: req.body.telefone2,
-      aniversario: req.body.aniversario,
       cep: req.body.cep,
       logo: `/logo/${filenamelogo}`,
       capa: `/capa/${filenamecapa}`,
       endereco: req.body.endereco,
-      tem_cnpj: req.body.tem_cnpj,
-      termos: req.body.termos,
       id_user: novoUsuario.id_user,
     });
 
