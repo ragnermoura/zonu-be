@@ -28,12 +28,8 @@ const cadastrarUsuario = async (req, res, next) => {
     }
     const hashedPassword = await bcrypt.hash(req.body.senha, 10);
     const filename = req.file ? req.file.filename : "default-avatar.png";
-    const filenamecapa = req.files.capa
-      ? req.files.capa[0].filename
-      : "default-capa.png";
-    const filenamelogo = req.files.logo
-      ? req.files.logo[0].filename
-      : "default-logo.png";
+    const filenameLogo = req.file ? req.file.filename : "default-logo.png";
+    const filenameCapa = req.file ? req.file.filename : "default-capa.png";
 
     const novoUsuario = await User.create({
       nome: req.body.nome,
@@ -51,8 +47,8 @@ const cadastrarUsuario = async (req, res, next) => {
       cnpj: req.body.cnpj,
       telefone: req.body.telefone,
       cep: req.body.cep,
-      logo: `/logo/${filenamelogo}`,
-      capa: `/capa/${filenamecapa}`,
+      avatar: `/logo/${filenameLogo}`,
+      avatar: `/capa/${filenameCapa}`,
       endereco: req.body.endereco,
       id_user: novoUsuario.id_user,
     });
