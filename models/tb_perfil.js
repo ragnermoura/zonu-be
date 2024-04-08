@@ -30,11 +30,11 @@ const Perfil = conn.define(
     },
     logo: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
     },
     capa: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
     },
     endereco: {
       type: DataTypes.STRING,
@@ -42,7 +42,7 @@ const Perfil = conn.define(
     },
     termos: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
     },
     id_user: {
       type: DataTypes.INTEGER,

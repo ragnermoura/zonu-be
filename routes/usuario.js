@@ -1,8 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const userController = require("../controllers/usuariosController");
-const { uploadFields } = require("../helpers/file-uploader");
-
 
 router.get("/", userController.obterUsuarios);
 router.get("/:id_user", userController.obterUsuarioPorId);
