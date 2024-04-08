@@ -13,40 +13,40 @@ const Perfil = conn.define(
     },
     razao_social: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     cnpj: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
       unique: true,
     },
     telefone: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     cep: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     logo: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     capa: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     endereco: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     termos: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     id_user: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
   },
   { freezeTableName: true }

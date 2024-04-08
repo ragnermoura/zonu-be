@@ -95,6 +95,65 @@ const cadastrarUsuario = async (req, res, next) => {
     return res.status(500).send({ error: error.message });
   }
 };
+const cadastrarUsuarioSimple = async (req, res, next) => {
+  try {
+     const filename = req.file ? req.file.filename : "default-avatar.png";
+     const usuarioExistente = await User.findOne({
+      where: { email: req.body.email },
+    });
+    if (usuarioExistente) {
+      return res.status(409).send({
+        mensagem: "Email já cadastrado, por favor insira um email diferente!",
+      });
+    }
+    const hashedPassword = await bcrypt.hash(req.body.senha, 10);
+
+    const novoUsuario = await User.create({
+      nome: req.body.nome,
+      sobrenome: req.body.sobrenome,
+      email: req.body.email,
+      senha: hashedPassword,
+      avatar: `/avatar/${filename}`,
+      id_plano: req.body.id_plano,
+      id_status: req.body.status,
+      id_nivel: req.body.nivel,
+    });
+
+    const codigoAleatorio = Math.floor(1000 + Math.random() * 9000).toString();
+
+    const code = await Code.create({
+      type_code: 1,
+      code: codigoAleatorio,
+      id_user: novoUsuario.id_user,
+    });
+
+    const tokenUsuario = await Token.create({
+      id_user: novoUsuario.id_user,
+      token: uuidv4(),
+    });
+
+    const response = {
+      mensagem: "Usuário cadastrado com sucesso",
+      usuarioCriado: {
+        id_user: novoUsuario.id_user,
+        nome: novoUsuario.nome,
+        email: novoUsuario.email,
+        nivel: novoUsuario.id_nivel,
+        token_unico: tokenUsuario.token,
+        code: code.code,
+        request: {
+          tipo: "GET",
+          descricao: "Pesquisar um usuário",
+          url: `https://trustchecker.com.br/api/usuarios/${novoUsuario.id_user}`,
+        },
+      },
+    };
+
+    return res.status(202).send(response);
+  } catch (error) {
+    return res.status(500).send({ error: error.message });
+  }
+};
 const obterUsuarios = async (req, res, next) => {
   try {
     const usuarios = await User.findAll();
@@ -173,5 +232,6 @@ module.exports = {
   atualizarUsuario,
   excluirUsuario,
   cadastrarUsuario,
+  cadastrarUsuarioSimple,
   atualizarDadosUsuario,
 }

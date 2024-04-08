@@ -10,6 +10,7 @@ router.patch("/edit", userController.atualizarUsuario);
 router.patch("/dados", userController.atualizarDadosUsuario);
 router.delete("/delete", userController.excluirUsuario);
 router.post("/cadastro", uploadFields, userController.cadastrarUsuario);
+router.post("/cadastro-simples", uploadFields, userController.cadastrarUsuarioSimple);
 
 
 /**

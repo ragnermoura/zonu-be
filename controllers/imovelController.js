@@ -17,8 +17,6 @@ const criarImovel = async (req, res) => {
   try {
     const tabInfo = await Info.create({
       cod_referencia: req.body.cod_referencia,
-      corretor: req.body.corretor,
-      agenciador: req.body.agenciador,
       tipo: req.body.tipo,
       perfil_imovel: req.body.perfil_imovel,
       situacao_imovel: req.body.situacao_imovel,
@@ -30,6 +28,7 @@ const criarImovel = async (req, res) => {
       averbado: req.body.averbado,
       escriturado: req.body.escriturado,
       esquina: req.body.esquina,
+      mobilia: req.body.mobilia,
     });
 
     const tabComodos = await Comodos.create({

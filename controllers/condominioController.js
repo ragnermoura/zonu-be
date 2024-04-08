@@ -15,7 +15,7 @@ const obterCondominios = async (req, res, next) => {
 // Obtém um condomínio pelo ID
 const obterCondominioPorId = async (req, res, next) => {
   try {
-    const condominio = await Condominio.findByPk(req.params.id_condominio);
+    const condominio = await Condominio.findByPk(req.params.id_user);
     if (condominio) {
       return res.status(200).send({ response: condominio });
     } else {

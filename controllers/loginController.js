@@ -2,14 +2,13 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const  Usuario  = require("../models/tb_usuarios");
-const  Perfil  = require("../models/tb_perfil");
+
 
 const autenticarUsuario = async (req, res, next) => {
   try {
     const { email, senha } = req.body;
 
     const user = await Usuario.findOne({ where: { email: email } });
-    const perfil = await Perfil.findOne({ where: { id_user: user.id_user } });
 
     if (!user) {
       return res.status(401).send({
@@ -30,11 +29,6 @@ const autenticarUsuario = async (req, res, next) => {
           id_plano: user.id_plano,
           id_nivel: user.id_nivel,
           id_status: user.id_status,
-          razao_social: perfil.razao_social,
-          cnpj: perfil.cnpj,
-          telefone: perfil.telefone,
-          cep: perfil.cep,
-          endereco: perfil.endereco,
         },
         process.env.JWT_KEY,
         {

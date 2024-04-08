@@ -14,11 +14,24 @@ const obterProprietarios = async (req, res) => {
   }
 };
 
-const obterProprietarioPorId = async (req, res) => {
+// const obterProprietarioPorId = async (req, res) => {
+//   try {
+//     const proprietario = await Proprietario.findByPk(req.params.id_user, {
+//       include: [{ model: Usuario, as: 'Usuario' }]
+//     });
+//     if (proprietario) {
+//       return res.status(200).send({ response: proprietario });
+//     } else {
+//       return res.status(404).send({ message: 'Proprietário não encontrado' });
+//     }
+//   } catch (error) {
+//     return res.status(500).send({ error: error.message });
+//   }
+// };
+
+const obterProprietarioPorId = async (req, res, next) => {
   try {
-    const proprietario = await Proprietario.findByPk(req.params.id_proprietario, {
-      include: [{ model: Usuario, as: 'Usuario' }]
-    });
+    const proprietario = await Proprietario.findByPk(req.params.id_user);
     if (proprietario) {
       return res.status(200).send({ response: proprietario });
     } else {
