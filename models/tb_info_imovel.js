@@ -13,11 +13,11 @@ const Info = conn.define("tb_info_imovel", {
   },
   corretor: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   agenciador: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   tipo: {
     type: DataTypes.STRING,

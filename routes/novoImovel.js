@@ -3,8 +3,9 @@ const router = express.Router();
 const { uploadArray } = require("../helpers/file-uploader");
 const novoImovelController = require("../controllers/imovelController");
 
-
-router.post("/cadastro", uploadArray, novoImovelController.criarImovel);
+router.post("/cadastrar", uploadArray, (req, res, next) => {
+    next();
+}, novoImovelController.criarImovel);
 
 
 

@@ -34,6 +34,7 @@ const uploadFields = multer({
     storage: storage,
     fileFilter: fileFilter,
 }).fields([
+    { name: "avatar", maxCount: 1 },
     { name: "logo", maxCount: 1 },
     { name: "capa", maxCount: 1 },
     { name: "foto", maxCount: 10 },

@@ -1,6 +1,7 @@
 const express = require('express');
 
 const Proximidades = require('../models/tb_proximidades');
+const Usuario = require('../models/tb_usuarios'); 
 
 const obterProximidades = async (req, res) => {
   try {
@@ -15,13 +16,20 @@ const obterProximidades = async (req, res) => {
 
 const obterProximidadePorId = async (req, res) => {
   try {
-    const proximidade = await Proximidades.findByPk(req.params.id_proximidade, {
-      include: [{ all: true }]
+    const proximidades = await Proximidades.findAll({
+      where: {
+        id_user: req.params.id_user
+      },
+      include: [{
+        model: Usuario,
+        required: true
+      }]
     });
-    if (proximidade) {
-      return res.status(200).send({ response: proximidade });
+
+    if (proximidades && proximidades.length > 0) {
+      return res.status(200).send({ response: proximidades });
     } else {
-      return res.status(404).send({ message: 'Proximidade não encontrada' });
+      return res.status(404).send({ message: 'Proximidades não encontradas para o usuário' });
     }
   } catch (error) {
     return res.status(500).send({ error: error.message });

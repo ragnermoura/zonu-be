@@ -12,7 +12,7 @@ const Descricao = conn.define("tb_descricao", {
     allowNull: false,
   },
   apresentacao: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: false,
   },
 

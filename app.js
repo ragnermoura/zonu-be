@@ -18,11 +18,10 @@ const rotaStatus = require('./routes/status');
 const rotaUsuarios = require('./routes/usuario');
 const rotaEnvios = require('./routes/envio');
 const rotaCaracteristica = require('./routes/caracteristica');
-const rotaProximidades = require('./routes/Proximidades');
+const rotaProximidades = require('./routes/proximidades');
 const rotaNovoCondominio = require('./routes/novoConcominio');
 const rotaNovoImovel = require('./routes/novoImovel');
 const rotaProprietario = require('./routes/proprietario');
-
 
 
 app.use(morgan('dev'));
@@ -82,5 +81,7 @@ app.use((error, req, res, next) => {
         }
     })
 });
+
+
 
 module.exports = app;

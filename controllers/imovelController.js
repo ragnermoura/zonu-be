@@ -41,9 +41,9 @@ const criarImovel = async (req, res) => {
       garagem_box: req.body.garagem_box,
       sala_tv: req.body.sala_tv,
       sala_jantar: req.body.sala_jantar,
-      sala_estar: req.body.sala_estar,
       lavabo: req.body.lavabo,
       area_servico: req.body.area_servico,
+      cozinha: req.body.cozinha,
       closet: req.body.closet,
       escritorio: req.body.escritorio,
       casa_empregada: req.body.casa_empregada,
@@ -107,50 +107,12 @@ const criarImovel = async (req, res) => {
       link_apresentacao: req.body.link_apresentacao,
     });
 
-    if (req.files && req.files.length) {
-      await Promise.all(
-        req.files.map((file) =>
-          Foto.create({
-            foto: `/foto/${file.filename}`,
-            status: req.body.status,
-            id_imovel: NovoImovel.id_imovel,
-          })
-        )
-      );
-    }
-    if (req.body.caracteristicas) {
-      const caracteristicas = JSON.parse(req.body.caracteristicas);
-      if (Array.isArray(caracteristicas)) {
-        await Promise.all(
-          caracteristicas.map((item) =>
-            Caracteristicas.create({
-              id_caracteristica: item.id_caracteristica,
-              id_imovel: NovoImovel.id_imovel,
-            })
-          )
-        );
-      }
-    }
-    if (req.body.proximidades) {
-      const proximidades = JSON.parse(req.body.proximidades);
-      if (Array.isArray(proximidades)) {
-        await Promise.all(
-          proximidades.map((dado) =>
-            Proximidades.create({
-              id_proximidades: dado.id_proximidades,
-              id_imovel: NovoImovel.id_imovel,
-            })
-          )
-        );
-      }
-    }
-
     const tabPublicacao = await Publicacao.create({
       mostrar_imovel_publi: req.body.mostrar_imovel_publi,
       tarja_imovel_site_publi: req.body.tarja_imovel_site_publi,
       cor_tarja_publi: req.body.cor_tarja_publi,
-      id_imovel: NovoImovel.id_imovel,
     });
+ 
 
     const NovoImovel = await Imovel.Publicacao({
       id_info: tabInfo.id_info,
@@ -166,11 +128,61 @@ const criarImovel = async (req, res) => {
       id_publicacao: tabPublicacao.id_publicacao,
       id_user: req.body.id_user,
     });
+
+    const defaultFilename = "default-foto.png";
+
+    // Verifica se há fotos enviadas
+    if (req.files && req.files.length > 0) {
+        // Cadastra as imagens enviadas
+        await Promise.all(req.files.map(file =>
+          Foto.create({
+              foto: `/foto/${file.filename}`,
+              id_imovel: NovoImovel.id_imovel,
+            })
+        ));
+    } else {
+        await Foto.create({
+            foto: `/foto/${defaultFilename}`,
+            id_imovel: NovoImovel.id_imovel,
+        });
+      }
+
+    
+    if (req.body.caracteristicas) {
+      const caracteristicas = JSON.parse(req.body.caracteristicas);
+      if (Array.isArray(caracteristicas)) {
+        await Promise.all(
+          caracteristicas.map((item) =>
+            Caracteristicas.create({
+              id_caracteristica: item.id_caracteristica,
+              id_imovel: NovoImovel.id_imovel,
+            })
+          )
+        );
+      }
+    }
+
+    if (req.body.proximidades) {
+      const proximidades = JSON.parse(req.body.proximidades);
+      if (Array.isArray(proximidades)) {
+        await Promise.all(
+          proximidades.map((dado) =>
+            Proximidades.create({
+              id_proximidades: dado.id_proximidades,
+              id_imovel: NovoImovel.id_imovel,
+            })
+          )
+        );
+      }
+    }
+
+
+
   } catch (error) {
-    console.error("Erro ao criar prato: ", error);
+    console.error("Erro ao criar Imovel: ", error);
     return res
       .status(500)
-      .send({ mensagem: "Erro ao criar prato", error: error.message });
+      .send({ mensagem: "Erro ao criar Imovel: ", error: error.message });
   }
 };
 

@@ -15,7 +15,7 @@ const ImagemImovel = conn.define("tb_imagem_imovel", {
   },
   status: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   id_imovel: {
     type: DataTypes.INTEGER,
