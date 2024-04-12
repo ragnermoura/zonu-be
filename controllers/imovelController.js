@@ -17,7 +17,7 @@ const criarImovel = async (req, res) => {
   try {
     const tabInfo = await Info.create({
       cod_referencia: req.body.cod_referencia,
-      tipo: req.body.tipo,
+      tipo: req.body.tipo_imovel,
       perfil_imovel: req.body.perfil_imovel,
       situacao_imovel: req.body.situacao_imovel,
       ano_construcao: req.body.ano_construcao,
@@ -99,7 +99,7 @@ const criarImovel = async (req, res) => {
 
     const tabDescricao = await Descricao.create({
       titulo: req.body.titulo,
-      apresentacao: req.body.apresentacao,
+      apresentacao: req.body.descricao,
     });
 
     const tabComplemento = await Complemento.create({
@@ -112,9 +112,9 @@ const criarImovel = async (req, res) => {
       tarja_imovel_site_publi: req.body.tarja_imovel_site_publi,
       cor_tarja_publi: req.body.cor_tarja_publi,
     });
- 
 
-    const NovoImovel = await Imovel.Publicacao({
+
+    const NovoImovel = await Imovel.create({
       id_info: tabInfo.id_info,
       tem_condominio: req.body.tem_condominio,
       id_condominio: req.body.id_condominio,
@@ -133,47 +133,55 @@ const criarImovel = async (req, res) => {
 
     // Verifica se há fotos enviadas
     if (req.files && req.files.length > 0) {
-        // Cadastra as imagens enviadas
-        await Promise.all(req.files.map(file =>
-          Foto.create({
-              foto: `/foto/${file.filename}`,
-              id_imovel: NovoImovel.id_imovel,
-            })
-        ));
+      // Cadastra as imagens enviadas
+      await Promise.all(req.files.map(file =>
+        Foto.create({
+          foto: `/foto/${file.filename}`,
+          id_imovel: NovoImovel.id_imovel,
+        })
+      ));
     } else {
-        await Foto.create({
-            foto: `/foto/${defaultFilename}`,
-            id_imovel: NovoImovel.id_imovel,
-        });
-      }
-
-    
-    if (req.body.caracteristicas) {
-      const caracteristicas = JSON.parse(req.body.caracteristicas);
-      if (Array.isArray(caracteristicas)) {
-        await Promise.all(
-          caracteristicas.map((item) =>
-            Caracteristicas.create({
-              id_caracteristica: item.id_caracteristica,
-              id_imovel: NovoImovel.id_imovel,
-            })
-          )
-        );
-      }
+      await Foto.create({
+        foto: `/foto/${defaultFilename}`,
+        id_imovel: NovoImovel.id_imovel,
+      });
     }
 
-    if (req.body.proximidades) {
-      const proximidades = JSON.parse(req.body.proximidades);
-      if (Array.isArray(proximidades)) {
-        await Promise.all(
-          proximidades.map((dado) =>
-            Proximidades.create({
-              id_proximidades: dado.id_proximidades,
-              id_imovel: NovoImovel.id_imovel,
-            })
-          )
-        );
-      }
+
+    let caracteristicas = [];
+    try {
+      caracteristicas = JSON.parse(req.body.caracteristicas);
+    } catch (error) {
+      console.error("Erro ao parsear 'caracteristicas':", error);
+      return res.status(400).send({ mensagem: "Formato inválido para caracteristicas" });
+    }
+    if (Array.isArray(caracteristicas)) {
+      await Promise.all(
+        caracteristicas.map(item =>
+          Caracteristicas.create({
+            id_caracteristica: item.id_caracteristica,
+            id_imovel: NovoImovel.id_imovel,
+          })
+        )
+      );
+    }
+
+    let proximidades = [];
+    try {
+      proximidades = JSON.parse(req.body.proximidades);
+    } catch (error) {
+      console.error("Erro ao parsear 'proximidades':", error);
+      return res.status(400).send({ mensagem: "Formato inválido para proximidades" });
+    }
+    if (Array.isArray(proximidades)) {
+      await Promise.all(
+        proximidades.map(dado =>
+          Proximidades.create({
+            id_proximidades: dado.id_proximidades,
+            id_imovel: NovoImovel.id_imovel,
+          })
+        )
+      );
     }
 
 

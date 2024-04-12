@@ -10,11 +10,11 @@ const Complemento = conn.define("tb_complemento", {
   },
   link_youtube: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   link_apresentacao: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
 }, { freezeTableName: true });
 
