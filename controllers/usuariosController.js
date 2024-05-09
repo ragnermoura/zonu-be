@@ -53,6 +53,7 @@ const cadastrarUsuario = async (req, res, next) => {
       avatar: `/logo/${filenameLogo}`,
       avatar: `/capa/${filenameCapa}`,
       endereco: req.body.endereco,
+      termos: "S",
       id_user: novoUsuario.id_user,
     });
 
@@ -255,18 +256,14 @@ const atualizarStatusUsuario = async (req, res, next) => {
   }
 };
 
-const atualizarDadosUsuario = async (req, res, next) => {
+const trocaSenha = async (req, res, next) => {
   try {
     const usuario = await User.findByPk(req.body.id_user);
     if (!usuario) {
       return res.status(404).send({ message: "Usuário não encontrado" });
     }
-    usuario.education = req.body.education;
-    usuario.phonenumber = req.body.phonenumber;
-    usuario.address = req.body.address;
-    usuario.zipcode = req.body.zipcode;
-    usuario.country = req.body.country;
-    usuario.language = req.body.language;
+    usuario.senha = req.body.senha;
+ 
 
     await usuario.save();
     return res
@@ -309,6 +306,6 @@ module.exports = {
   excluirUsuario,
   cadastrarUsuario,
   cadastrarUsuarioSimple,
-  atualizarDadosUsuario,
+  trocaSenha,
   atualizarStatusUsuario,
 };

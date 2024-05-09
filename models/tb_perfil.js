@@ -30,11 +30,11 @@ const Perfil = conn.define(
     },
     logo: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     capa: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     endereco: {
       type: DataTypes.STRING,

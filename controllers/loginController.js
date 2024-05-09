@@ -1,7 +1,10 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const  Usuario  = require("../models/tb_usuarios");
+const Usuario = require("../models/tb_usuarios");
+const Perfil = require("../models/tb_perfil");
+const MyToken = require("../models/tb_token");
+const Qrcode = require("../models/tb_qrcode");
 
 
 const autenticarUsuario = async (req, res, next) => {
@@ -19,6 +22,9 @@ const autenticarUsuario = async (req, res, next) => {
     const isPasswordValid = await bcrypt.compare(senha, user.senha);
 
     if (isPasswordValid) {
+      const perfil = await Perfil.findOne({ where: { id_user: user.id_user } });
+      const mytoken = await MyToken.findOne({ where: { id_user: user.id_user } });
+      const qrcode = await Qrcode.findOne({ where: { id_user: user.id_user } });
       const token = jwt.sign(
         {
           id_user: user.id_user,
@@ -29,6 +35,10 @@ const autenticarUsuario = async (req, res, next) => {
           id_plano: user.id_plano,
           id_nivel: user.id_nivel,
           id_status: user.id_status,
+          perfil: perfil,
+          token: mytoken,
+          qrcode: qrcode
+
         },
         process.env.JWT_KEY,
         {
