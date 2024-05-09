@@ -23,9 +23,8 @@ const ImagemImovel = conn.define("tb_imagem_imovel", {
 
 
 ImagemImovel.belongsTo(NovoImovel, {
-    foreignKey: "id_imovel",
-    foreignKeyConstraint: true,
-  });
+  foreignKey: "id_imovel",
+});
 
 
 module.exports = ImagemImovel;

@@ -5,9 +5,11 @@ const { uploadFields } = require("../helpers/file-uploader");
     
 router.get("/", userController.obterUsuarios);
 router.get("/:id_user", userController.obterUsuarioPorId);
+router.patch("/status/", userController.atualizarStatusUsuario);
 router.patch("/edit", userController.atualizarUsuario);
 router.patch("/dados", userController.atualizarDadosUsuario);
-router.delete("/delete", userController.excluirUsuario);
+router.delete("/delete/:id_user", userController.excluirUsuario);
+
 router.post("/cadastro", uploadFields, userController.cadastrarUsuario);
 router.post("/cadastro-simples", uploadFields, userController.cadastrarUsuarioSimple);
 

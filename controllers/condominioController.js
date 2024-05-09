@@ -15,14 +15,17 @@ const obterCondominios = async (req, res, next) => {
 // Obtém um condomínio pelo ID
 const obterCondominioPorId = async (req, res, next) => {
   try {
-    const condominio = await Condominio.findByPk(req.params.id_user);
+    const { id_user } = req.params;
+    const condominio = await Condominio.findAll({
+      where: { id_user },
+    });
     if (condominio) {
       return res.status(200).send({ response: condominio });
     } else {
       return res.status(404).send({ message: 'Condomínio não encontrado' });
     }
   } catch (error) {
-    return res.status(500).send({ error: error.message });
+    return res.status(500).send({ error: error.message });  
   }
 };
 

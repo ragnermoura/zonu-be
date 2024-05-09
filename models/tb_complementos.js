@@ -16,6 +16,10 @@ const Complemento = conn.define("tb_complemento", {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  link_drive: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
 }, { freezeTableName: true });
 
 

@@ -15,117 +15,120 @@ const Usuario = require("./tb_usuarios");
 const Publicacao = require("./tb_publicacao");
 
 
-const NovoImovel = conn.define("tb_novo_imovel", {
-  id_imovel: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    primaryKey: true,
-  },
-  id_info: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  tem_condominio: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  id_condominio: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-  },
-  id_proprietario: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  id_comodos: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-  },
-  id_medidas: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-  },
-  id_preco: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-  },
-  id_localizacao: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-  },
-  id_descricao: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-  },
-  id_complemento: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-  },
-  id_publicacao: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-  },
-  id_user: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-  },
 
-}, { freezeTableName: true });
-
+const NovoImovel = conn.define(
+  "tb_novo_imovel",
+  {
+    id_imovel: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    id_info: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    tem_condominio: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    id_condominio: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    id_proprietario: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    id_comodos: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    id_medidas: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    id_preco: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    id_localizacao: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    id_descricao: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    id_complemento: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    id_publicacao: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    id_user: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+  },
+  { freezeTableName: true }
+);
 
 NovoImovel.belongsTo(Info, {
+  as: "info",
   foreignKey: "id_info",
-  foreignKeyConstraint: true,
 });
 
 NovoImovel.belongsTo(Condominio, {
   foreignKey: "id_condominio",
-  foreignKeyConstraint: true,
+  as: "condominio"
 });
 
 NovoImovel.belongsTo(Proprietario, {
   foreignKey: "id_proprietario",
-  foreignKeyConstraint: true,
+  as: "propietario"
 });
 
 NovoImovel.belongsTo(Comodos, {
   foreignKey: "id_comodos",
-  foreignKeyConstraint: true,
+  as: "comodos"
 });
 
 NovoImovel.belongsTo(Medidas, {
   foreignKey: "id_medidas",
-  foreignKeyConstraint: true,
+  as: "medidas",
 });
 
 NovoImovel.belongsTo(Preco, {
   foreignKey: "id_preco",
-  foreignKeyConstraint: true,
+  as: "preco",
 });
 
 NovoImovel.belongsTo(Localizacao, {
   foreignKey: "id_localizacao",
-  foreignKeyConstraint: true,
+  as: "localizacao",
 });
 
 NovoImovel.belongsTo(Descricao, {
   foreignKey: "id_descricao",
-  foreignKeyConstraint: true,
+  as: "descricao",
 });
 
 NovoImovel.belongsTo(Complemento, {
   foreignKey: "id_complemento",
-  foreignKeyConstraint: true,
+  as: "complemento",
 });
 
 NovoImovel.belongsTo(Publicacao, {
   foreignKey: "id_publicacao",
-  foreignKeyConstraint: true,
+  as: "publicacao",
 });
 
 NovoImovel.belongsTo(Usuario, {
   foreignKey: "id_user",
-  foreignKeyConstraint: true,
+  as: "usuario",
 });
 
 

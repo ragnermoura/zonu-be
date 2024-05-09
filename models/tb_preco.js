@@ -63,6 +63,10 @@ const Preco = conn.define("tb_preco", {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  valor_metro_quadrado: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
 
 
 }, { freezeTableName: true });

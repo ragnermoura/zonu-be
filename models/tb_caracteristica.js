@@ -18,15 +18,12 @@ const Caracteristica = conn.define("tb_caracteristica", {
         allowNull: true,
     },
 
-
 }, { freezeTableName: true });
-
 
 Caracteristica.belongsTo(Usuario, {
     foreignKey: "id_user",
     foreignKeyConstraint: true,
 });
-
 
 
 module.exports = Caracteristica;

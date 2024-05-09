@@ -1,17 +1,21 @@
 const express = require("express");
-
+const QRCode = require("qrcode");
 const Info = require("../models/tb_info_imovel");
 const Comodos = require("../models/tb_comodos");
 const Medidas = require("../models/tb_medidas");
 const Preco = require("../models/tb_preco");
 const Foto = require("../models/tb_imagem_imovel");
 const Caracteristicas = require("../models/tb_imovel_caracteristica");
+const Caracteristica = require("../models/tb_caracteristica");
 const Localizacao = require("../models/tb_localizacao");
 const Descricao = require("../models/tb_descricao");
 const Proximidades = require("../models/tb_imovel_proximidades");
+const Proximidade = require("../models/tb_proximidades");
 const Complemento = require("../models/tb_complementos");
 const Publicacao = require("../models/tb_publicacao");
 const Imovel = require("../models/tb_imovel");
+const Qrcode = require("../models/tb_qrcode");
+const User = require("../models/tb_usuarios");
 
 const criarImovel = async (req, res) => {
   try {
@@ -71,6 +75,7 @@ const criarImovel = async (req, res) => {
       descricao_taxas: req.body.descricao_taxas,
       aceita_permuta: req.body.aceita_permuta,
       descricao_permuta: req.body.descricao_permuta,
+      valor_metro_quadrado: req.body.valor_metro_quadrado,
     });
 
     const tabLocalizacao = await Localizacao.create({
@@ -105,6 +110,7 @@ const criarImovel = async (req, res) => {
     const tabComplemento = await Complemento.create({
       link_youtube: req.body.link_youtube,
       link_apresentacao: req.body.link_apresentacao,
+      link_drive: req.body.link_drive,
     });
 
     const tabPublicacao = await Publicacao.create({
@@ -112,7 +118,6 @@ const criarImovel = async (req, res) => {
       tarja_imovel_site_publi: req.body.tarja_imovel_site_publi,
       cor_tarja_publi: req.body.cor_tarja_publi,
     });
-
 
     const NovoImovel = await Imovel.create({
       id_info: tabInfo.id_info,
@@ -123,7 +128,7 @@ const criarImovel = async (req, res) => {
       id_medidas: tabMedidas.id_medidas,
       id_preco: tabPreco.id_preco,
       id_localizacao: tabLocalizacao.id_localizacao,
-      id_descricao: tabDescricao.tabDescricao,
+      id_descricao: tabDescricao.id_descricao,
       id_complemento: tabComplemento.id_complemento,
       id_publicacao: tabPublicacao.id_publicacao,
       id_user: req.body.id_user,
@@ -131,15 +136,15 @@ const criarImovel = async (req, res) => {
 
     const defaultFilename = "default-foto.png";
 
-    // Verifica se há fotos enviadas
     if (req.files && req.files.length > 0) {
-      // Cadastra as imagens enviadas
-      await Promise.all(req.files.map(file =>
-        Foto.create({
-          foto: `/foto/${file.filename}`,
-          id_imovel: NovoImovel.id_imovel,
-        })
-      ));
+      await Promise.all(
+        req.files.map((file) =>
+          Foto.create({
+            foto: `/foto/${file.filename}`,
+            id_imovel: NovoImovel.id_imovel,
+          })
+        )
+      );
     } else {
       await Foto.create({
         foto: `/foto/${defaultFilename}`,
@@ -147,45 +152,55 @@ const criarImovel = async (req, res) => {
       });
     }
 
-
     let caracteristicas = [];
     try {
-      caracteristicas = JSON.parse(req.body.caracteristicas);
+        console.log('Recebido para caracteristicas:', req.body.id_caracteristicas);
+        caracteristicas = JSON.parse(req.body.id_caracteristicas);
     } catch (error) {
-      console.error("Erro ao parsear 'caracteristicas':", error);
-      return res.status(400).send({ mensagem: "Formato inválido para caracteristicas" });
+        console.log('Erro ao analisar caracteristicas:', error);
+        return res.status(400).send({ mensagem: "Formato inválido para caracteristicas" });
     }
     if (Array.isArray(caracteristicas)) {
-      await Promise.all(
-        caracteristicas.map(item =>
-          Caracteristicas.create({
-            id_caracteristica: item.id_caracteristica,
-            id_imovel: NovoImovel.id_imovel,
-          })
-        )
-      );
-    }
+        await Promise.all(
+            caracteristicas.map((item) =>
+                Caracteristicas.create({
+                    id_caracteristica: item,
+                    id_imovel: NovoImovel.id_imovel,
+                })
+            )
+        );
+    } 
+    
 
     let proximidades = [];
     try {
-      proximidades = JSON.parse(req.body.proximidades);
+      console.log('Recebido para caracteristicas:', req.body.id_proximidades);
+      proximidades = JSON.parse(req.body.id_proximidades);
     } catch (error) {
-      console.error("Erro ao parsear 'proximidades':", error);
-      return res.status(400).send({ mensagem: "Formato inválido para proximidades" });
+      return res
+        .status(400)
+        .send({ mensagem: "Formato inválido para proximidades" });
     }
     if (Array.isArray(proximidades)) {
       await Promise.all(
-        proximidades.map(dado =>
+        proximidades.map((dado) =>
           Proximidades.create({
-            id_proximidades: dado.id_proximidades,
+            id_proximidades: dado,
             id_imovel: NovoImovel.id_imovel,
           })
         )
       );
     }
 
+    const qrData = "https://zonu.com.br/imovel?id=" + NovoImovel.id_imovel;
+    const qrCodeURL = await QRCode.toDataURL(qrData);
 
+    const novoQrcode = await Qrcode.create({
+      qrcode: qrCodeURL,
+      id_imovel: NovoImovel.id_imovel,
+    });
 
+    return res.status(200).send("Imovel criado com sucesso!");
   } catch (error) {
     console.error("Erro ao criar Imovel: ", error);
     return res
@@ -194,6 +209,170 @@ const criarImovel = async (req, res) => {
   }
 };
 
+const obterImovelCompletoId = async (req, res) => {
+  try {
+    const { id_imovel } = req.params;
+    const imovel = await Imovel.findByPk(id_imovel, {
+      include: [
+        { model: Info, as: "info" },
+        { model: Comodos, as: "comodos" },
+        { model: Medidas, as: "medidas" },
+        { model: Preco, as: "preco" },
+        { model: Foto, as: "fotos" },
+        { model: Caracteristicas, as: "caracteristicas" },
+        { model: Localizacao, as: "localizacao" },
+        { model: Descricao, as: "descricao" },
+        { model: Proximidades, as: "proximidades" },
+        { model: Complemento, as: "complemento" },
+        { model: Publicacao, as: "publicacao" },
+        { model: Qrcode, as: "qrcode" },
+        { model: User, as: "usuario" },
+      ],
+    });
+
+    if (!imovel) {
+      return res.status(404).send({ message: "Imóvel não encontrado" });
+    }
+
+    return res.status(200).send(imovel);
+  } catch (error) {
+    console.error("Erro ao buscar Imóvel: ", error);
+    return res.status(500).send({ error: error.message });
+  }
+};
+
+const obterTodosImoveisCompletos = async (req, res) => {
+  try {
+    const imovel = await Imovel.findAll({
+      include: [
+        { model: Info, as: "info" },
+        { model: Comodos, as: "comodos" },
+        { model: Medidas, as: "medidas" },
+        { model: Preco, as: "preco" },
+        { model: Foto, as: 'fotos' },
+        {
+          model: Caracteristicas,
+          as: 'caracteristicas',
+          include: [{
+            model: Caracteristica,
+            as: "detalhesCaracteristica"
+          }]
+        },
+        { model: Localizacao, as: "localizacao" },
+        { model: Descricao, as: "descricao" },
+        {
+          model: Proximidades,
+          as: 'proximidades',
+          include: [{
+            model: Proximidade,
+            as: "detalhesProximidade"
+          }]
+        },
+        { model: Complemento, as: "complemento" },
+        { model: Publicacao, as: "publicacao" },
+        { model: Qrcode, as: "qrcode" },
+        { model: User, as: "usuario" },
+      ],
+    });
+
+    if (!imovel) {
+      return res.status(404).send({ message: "Imóvel não encontrado" });
+    }
+
+    return res.status(200).send(imovel);
+  } catch (error) {
+    console.error("Erro ao buscar Imóvel: ", error);
+    return res.status(500).send({ error: error.message });
+  }
+};
+
+const obterImovelCompletoIdUser = async (req, res) => {
+  try {
+    const { id_user } = req.params;
+    const imovel = await Imovel.findAll({
+      where: { id_user },
+      include: [
+        { model: Info, as: "info" },
+        { model: Comodos, as: "comodos" },
+        { model: Medidas, as: "medidas" },
+        { model: Preco, as: "preco" },
+        { model: Foto, as: 'fotos' },
+        // { model: Caracteristicas, as: "caracteristicas" },
+        {
+          model: Caracteristicas,
+          as: 'caracteristicas',
+          include: [{
+            model: Caracteristica,
+            as: "detalhesCaracteristica"
+          }]
+        },
+        { model: Localizacao, as: "localizacao" },
+        { model: Descricao, as: "descricao" },
+        {
+          model: Proximidades,
+          as: 'proximidades',
+          include: [{
+            model: Proximidade,
+            as: "detalhesProximidade"
+          }]
+        },
+        { model: Complemento, as: "complemento" },
+        { model: Publicacao, as: "publicacao" },
+        { model: Qrcode, as: "qrcode" },
+        { model: User, as: "usuario" },
+      ],
+    });
+
+    if (!imovel) {
+      return res.status(404).send({ message: "Imóvel não encontrado" });
+    }
+
+    return res.status(200).send(imovel);
+  } catch (error) {
+    console.error("Erro ao buscar Imóvel: ", error);
+    return res.status(500).send({ error: error.message });
+  }
+};
+
+const obterBairro = async (req, res) => {
+  try {
+     const bairro = await Localizacao.findAll();
+    if (!bairro) {
+      return res.status(404).send({ message: "Endereços não encontrados" });
+    }
+    return res.status(200).send(bairro);
+  } catch (error) {
+    console.error("Erro ao buscar endereços: ", error);
+    return res.status(500).send({ error: error.message });
+  }
+};
+
+const excluirImovel = async (req, res) => {
+  try {
+    const { id_imovel } = req.params;
+
+    const imovel = await Imovel.findOne({ where: { id_imovel } });
+    if (!imovel) {
+      return res.status(404).json({ mensagem: "Imóvel não encontrado" });
+    }
+
+    await Imovel.destroy({ where: { id_imovel } });
+
+    return res.status(200).json({ mensagem: "Imóvel excluído com sucesso!" });
+  } catch (error) {
+    console.error("Erro ao excluir o imóvel:", error);
+    return res
+      .status(500)
+      .json({ mensagem: "Erro ao excluir o imóvel", error: error.message });
+  }
+};
+
+
 module.exports = {
   criarImovel,
+  obterImovelCompletoId,
+  obterTodosImoveisCompletos,
+  obterImovelCompletoIdUser,
+  excluirImovel,
+  obterBairro
 };

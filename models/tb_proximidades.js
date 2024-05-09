@@ -26,5 +26,4 @@ Proximidades.belongsTo(Usuario, {
 });
 
 
-
 module.exports = Proximidades;

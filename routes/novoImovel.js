@@ -4,31 +4,18 @@ const { uploadArray } = require("../helpers/file-uploader");
 const novoImovelController = require("../controllers/imovelController");
 
 router.post("/cadastrar", uploadArray, (req, res, next) => {
-    console.log("Recebendo nova requisição de cadastro de imóvel.");
-
-    // Log do corpo da requisição
-    console.log("Corpo da requisição (req.body):", req.body);
-
-    // Verifica se há arquivos e, se sim, loga detalhes
-    if (req.files) {
-        console.log(`Recebidos ${req.files.length} arquivos.`);
-        req.files.forEach((file, index) => {
-            console.log(`Arquivo ${index + 1}:`);
-            console.log(`  Nome do Campo: ${file.fieldname}`);
-            console.log(`  Nome do Arquivo: ${file.originalname}`);
-            console.log(`  Tipo do Arquivo: ${file.mimetype}`);
-            console.log(`  Tamanho: ${file.size}`);
-        });
-    } else {
-        console.log("Nenhum arquivo foi recebido.");
-    }
-
-    // Caso queira logar outros detalhes, como cabeçalhos
-    console.log("Cabeçalhos da requisição (req.headers):", req.headers);
-
-    // Continua para o próximo middleware/controlador
     next();
 }, novoImovelController.criarImovel);
+
+router.get('/', novoImovelController.obterTodosImoveisCompletos);
+router.get('/buscar/:id_imovel', novoImovelController.obterImovelCompletoId);
+router.get('/user/:id_user', novoImovelController.obterImovelCompletoIdUser);
+router.delete('/delete/:id_imovel', novoImovelController.excluirImovel);
+router.get('/bairro', novoImovelController.obterBairro);
+
+
+
+module.exports = router;
 
 
 

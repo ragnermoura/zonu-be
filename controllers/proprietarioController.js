@@ -31,7 +31,10 @@ const obterProprietarios = async (req, res) => {
 
 const obterProprietarioPorId = async (req, res, next) => {
   try {
-    const proprietario = await Proprietario.findByPk(req.params.id_user);
+    const { id_user } = req.params;
+    const proprietario = await Proprietario.findAll({
+      where: { id_user },
+    });
     if (proprietario) {
       return res.status(200).send({ response: proprietario });
     } else {
