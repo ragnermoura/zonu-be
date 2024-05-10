@@ -262,10 +262,14 @@ const trocaSenha = async (req, res, next) => {
     if (!usuario) {
       return res.status(404).send({ message: "Usuário não encontrado" });
     }
-    usuario.senha = req.body.senha;
- 
 
-    await usuario.save();
+    // Criptografa a nova senha antes de salvar
+    const hashedPassword = await bcrypt.hash(req.body.senha, 10);
+    usuario.senha = hashedPassword;
+
+    // Não é necessário salvar o usuário explicitamente
+    // await usuario.save();
+ 
     return res
       .status(201)
       .send({ mensagem: "Dados de usuário alterados com sucesso!" });
