@@ -258,25 +258,34 @@ const atualizarStatusUsuario = async (req, res, next) => {
 
 const trocaSenha = async (req, res, next) => {
   try {
-    const usuario = await User.findByPk(req.body.id_user);
+    const userId = req.params.id_user;
+
+    // Verifica se o ID do usuário é válido
+    if (!userId) {
+      return res.status(400).send({ message: "ID do usuário não fornecido" });
+    }
+
+    const usuario = await User.findByPk(userId);
+    
+    // Verifica se o usuário foi encontrado
     if (!usuario) {
       return res.status(404).send({ message: "Usuário não encontrado" });
     }
 
-    // Criptografa a nova senha antes de salvar
+    // Atualiza a senha do usuário
     const hashedPassword = await bcrypt.hash(req.body.senha, 10);
     usuario.senha = hashedPassword;
 
-    // Não é necessário salvar o usuário explicitamente
-    // await usuario.save();
- 
-    return res
-      .status(201)
-      .send({ mensagem: "Dados de usuário alterados com sucesso!" });
+    // Salva as alterações no usuário
+    await usuario.save();
+
+    return res.status(200).send({ mensagem: "Senha alterada com sucesso!" });
   } catch (error) {
     return res.status(500).send({ error: error.message });
   }
 };
+
+
 
 const excluirUsuario = async (req, res, next) => {
   try {

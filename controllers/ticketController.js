@@ -49,6 +49,26 @@ const ticketController = {
       return res.status(500).send({ error: error.message });
     }
   },
+  listarUserTickets: async (req, res) => {
+    try {
+      const { id_user } = req.params;
+      const tickets = await Ticket.findAll({
+        where: { id_user },
+        include: [
+          {
+            model: User,
+            as: "usuario",
+            attributes: ["id_user", "nome", "sobrenome", "email", "avatar"],
+          },
+        ],
+      });
+
+      return res.status(200).send(tickets);
+    } catch (error) {
+      console.error("Error fetching tickets:", error);
+      return res.status(500).send({ error: error.message });
+    }
+  },
 
   // Obter um ticket específico pelo ID
   obterTicket: async (req, res) => {
