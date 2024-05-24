@@ -6,6 +6,7 @@ router.post("/boas-vindas", emailController.enviarBoasVindas);
 router.post("/senha", emailController.enviarSenha);
 router.post("/imovel", emailController.enviarNovoImovel);
 router.post("/acesso", emailController.enviarEmailAcesso);
+router.post("/admin", emailController.enviarAvisoAdmin);
 
 
 /**

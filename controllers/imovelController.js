@@ -17,6 +17,11 @@ const Imovel = require("../models/tb_imovel");
 const Qrcode = require("../models/tb_qrcode");
 const User = require("../models/tb_usuarios");
 
+const nodemailer = require("nodemailer");
+const path = require("path");
+const fs = require("fs").promises;
+require("dotenv").config();
+
 const criarImovel = async (req, res) => {
   try {
     const tabInfo = await Info.create({
@@ -33,6 +38,8 @@ const criarImovel = async (req, res) => {
       escriturado: req.body.escriturado,
       esquina: req.body.esquina,
       mobilia: req.body.mobilia,
+      email: req.body.email,
+      nome: req.body.nome,
     });
 
     const tabComodos = await Comodos.create({
@@ -123,7 +130,7 @@ const criarImovel = async (req, res) => {
       id_info: tabInfo.id_info,
       tem_condominio: req.body.tem_condominio,
       id_condominio: req.body.id_condominio,
-      id_proprietario: req.body.id_proprietario,
+      id_proprietario: req.body.id_user,
       id_comodos: tabComodos.id_comodos,
       id_medidas: tabMedidas.id_medidas,
       id_preco: tabPreco.id_preco,
@@ -154,27 +161,31 @@ const criarImovel = async (req, res) => {
 
     let caracteristicas = [];
     try {
-        console.log('Recebido para caracteristicas:', req.body.id_caracteristicas);
-        caracteristicas = JSON.parse(req.body.id_caracteristicas);
+      console.log(
+        "Recebido para caracteristicas:",
+        req.body.id_caracteristicas
+      );
+      caracteristicas = JSON.parse(req.body.id_caracteristicas);
     } catch (error) {
-        console.log('Erro ao analisar caracteristicas:', error);
-        return res.status(400).send({ mensagem: "Formato inválido para caracteristicas" });
+      console.log("Erro ao analisar caracteristicas:", error);
+      return res
+        .status(400)
+        .send({ mensagem: "Formato inválido para caracteristicas" });
     }
     if (Array.isArray(caracteristicas)) {
-        await Promise.all(
-            caracteristicas.map((item) =>
-                Caracteristicas.create({
-                    id_caracteristica: item,
-                    id_imovel: NovoImovel.id_imovel,
-                })
-            )
-        );
-    } 
-    
+      await Promise.all(
+        caracteristicas.map((item) =>
+          Caracteristicas.create({
+            id_caracteristica: item,
+            id_imovel: NovoImovel.id_imovel,
+          })
+        )
+      );
+    }
 
     let proximidades = [];
     try {
-      console.log('Recebido para caracteristicas:', req.body.id_proximidades);
+      console.log("Recebido para caracteristicas:", req.body.id_proximidades);
       proximidades = JSON.parse(req.body.id_proximidades);
     } catch (error) {
       return res
@@ -197,8 +208,42 @@ const criarImovel = async (req, res) => {
 
     const novoQrcode = await Qrcode.create({
       qrcode: qrCodeURL,
+      tipo: 1,
+      id_user: req.body.id_user,
       id_imovel: NovoImovel.id_imovel,
     });
+
+
+    const htmlFilePath = path.join(__dirname, "../template/imovel/index.html");
+    let htmlContent = await fs.readFile(htmlFilePath, "utf8");
+
+    htmlContent = htmlContent
+      .replace("{{nome}}", req.body.nome)
+      .replace("{{email}}", req.body.email);
+
+    const transporter = nodemailer.createTransport({
+      host: process.env.EMAIL_HOST,
+      port: process.env.EMAIL_PORT,
+      secure: true,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+      tls: {
+        ciphers: "TLSv1",
+      },
+    });
+
+  
+    let mailOptions = {
+      from: `"Equipe Zonu" ${process.env.EMAIL_FROM}`,
+      to: req.body.email,
+      subject: "🎉 Toc Toc Toc... Temos um novo imóvel!`,",
+      html: htmlContent,
+    };
+
+    let info = await transporter.sendMail(mailOptions);
+    console.log("Mensagem enviada: %s", info.messageId);
 
     return res.status(200).send("Imovel criado com sucesso!");
   } catch (error) {
@@ -249,24 +294,28 @@ const obterTodosImoveisCompletos = async (req, res) => {
         { model: Comodos, as: "comodos" },
         { model: Medidas, as: "medidas" },
         { model: Preco, as: "preco" },
-        { model: Foto, as: 'fotos' },
+        { model: Foto, as: "fotos" },
         {
           model: Caracteristicas,
-          as: 'caracteristicas',
-          include: [{
-            model: Caracteristica,
-            as: "detalhesCaracteristica"
-          }]
+          as: "caracteristicas",
+          include: [
+            {
+              model: Caracteristica,
+              as: "detalhesCaracteristica",
+            },
+          ],
         },
         { model: Localizacao, as: "localizacao" },
         { model: Descricao, as: "descricao" },
         {
           model: Proximidades,
-          as: 'proximidades',
-          include: [{
-            model: Proximidade,
-            as: "detalhesProximidade"
-          }]
+          as: "proximidades",
+          include: [
+            {
+              model: Proximidade,
+              as: "detalhesProximidade",
+            },
+          ],
         },
         { model: Complemento, as: "complemento" },
         { model: Publicacao, as: "publicacao" },
@@ -296,25 +345,29 @@ const obterImovelCompletoIdUser = async (req, res) => {
         { model: Comodos, as: "comodos" },
         { model: Medidas, as: "medidas" },
         { model: Preco, as: "preco" },
-        { model: Foto, as: 'fotos' },
+        { model: Foto, as: "fotos" },
         // { model: Caracteristicas, as: "caracteristicas" },
         {
           model: Caracteristicas,
-          as: 'caracteristicas',
-          include: [{
-            model: Caracteristica,
-            as: "detalhesCaracteristica"
-          }]
+          as: "caracteristicas",
+          include: [
+            {
+              model: Caracteristica,
+              as: "detalhesCaracteristica",
+            },
+          ],
         },
         { model: Localizacao, as: "localizacao" },
         { model: Descricao, as: "descricao" },
         {
           model: Proximidades,
-          as: 'proximidades',
-          include: [{
-            model: Proximidade,
-            as: "detalhesProximidade"
-          }]
+          as: "proximidades",
+          include: [
+            {
+              model: Proximidade,
+              as: "detalhesProximidade",
+            },
+          ],
         },
         { model: Complemento, as: "complemento" },
         { model: Publicacao, as: "publicacao" },
@@ -336,7 +389,7 @@ const obterImovelCompletoIdUser = async (req, res) => {
 
 const obterBairro = async (req, res) => {
   try {
-     const bairro = await Localizacao.findAll();
+    const bairro = await Localizacao.findAll();
     if (!bairro) {
       return res.status(404).send({ message: "Endereços não encontrados" });
     }
@@ -367,12 +420,11 @@ const excluirImovel = async (req, res) => {
   }
 };
 
-
 module.exports = {
   criarImovel,
   obterImovelCompletoId,
   obterTodosImoveisCompletos,
   obterImovelCompletoIdUser,
   excluirImovel,
-  obterBairro
+  obterBairro,
 };

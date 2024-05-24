@@ -1,6 +1,7 @@
 const express = require('express');
 
 const Caracteristica = require('../models/tb_caracteristica');
+const Usuario = require('../models/tb_usuarios'); 
 
 const obterCaracteristicas = async (req, res) => {
   try {
@@ -13,15 +14,23 @@ const obterCaracteristicas = async (req, res) => {
   }
 };
 
+
 const obterCaracteristicaPorId = async (req, res) => {
   try {
-    const caracteristica = await Caracteristica.findByPk(req.params.id_caracteristica, {
-      include: [{ all: true }] 
+    const caracteristica = await Caracteristica.findAll({
+      where: {
+        id_user: req.params.id_user,
+      },
+      include: [{
+        model: Usuario,
+        required: true,
+      }],
     });
-    if (caracteristica) {
+
+    if (caracteristica && caracteristica.length > 0) {
       return res.status(200).send({ response: caracteristica });
     } else {
-      return res.status(404).send({ message: 'Característica não encontrada' });
+      return res.status(404).send({ message: 'Características não encontradas para o usuário' });
     }
   } catch (error) {
     return res.status(500).send({ error: error.message });

@@ -43,6 +43,47 @@ const enviarBoasVindas = async (req, res) => {
     }
 };
 
+const enviarAvisoAdmin = async (req, res) => {
+    const { email, nome } = req.body;
+    try {
+        const htmlFilePath = path.join(__dirname, '../template/aviso/admin.html');
+        let htmlContent = await fs.readFile(htmlFilePath, "utf8");
+
+        htmlContent = htmlContent
+            .replace("{{nome}}", nome)
+            .replace("{{email}}", email)
+
+        const transporter = nodemailer.createTransport({
+            host: process.env.EMAIL_HOST,
+            port: process.env.EMAIL_PORT,
+            secure: true,
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS,
+            },
+            tls: {
+                ciphers: "TLSv1",
+            },
+        });
+
+        let emailAdmin = 'delayproducoes@gmail.com'
+
+        let mailOptions = {
+            from: `"Equipe Zonu" ${process.env.EMAIL_FROM}`,
+            to: emailAdmin,
+            subject: "✅ Temos um novo usuário na plataforma!",
+            html: htmlContent,
+        };
+
+        let info = await transporter.sendMail(mailOptions);
+        console.log("Mensagem enviada: %s", info.messageId);
+        res.send("Email enviado com sucesso!");
+    } catch (error) {
+        console.error("Erro ao enviar email: ", error);
+        res.send("Erro ao enviar email.");
+    }
+};
+
 const enviarSenha = async (req, res) => {
     const { email, nome } = req.body;
     try {
@@ -164,6 +205,7 @@ const enviarNovoImovel = async (req, res) => {
 
 module.exports = {
     enviarBoasVindas,
+    enviarAvisoAdmin,
     enviarNovoImovel,
     enviarEmailAcesso,
     enviarSenha

@@ -8,6 +8,9 @@ const Perfil = require("../models/tb_perfil");
 const Progress = require("../models/tb_progressao");
 const Qrcode = require("../models/tb_qrcode");
 
+const nodemailer = require("nodemailer");
+const path = require("path");
+const fs = require("fs").promises;
 require("dotenv").config();
 
 const cadastrarUsuario = async (req, res, next) => {
@@ -29,6 +32,7 @@ const cadastrarUsuario = async (req, res, next) => {
         mensagem: "Email já cadastrado, por favor insira um email diferente!",
       });
     }
+
     const hashedPassword = await bcrypt.hash(req.body.senha, 10);
     const filename = req.file ? req.file.filename : "default-avatar.png";
     const filenameLogo = req.file ? req.file.filename : "default-logo.png";
@@ -51,9 +55,14 @@ const cadastrarUsuario = async (req, res, next) => {
       telefone: req.body.telefone,
       cep: req.body.cep,
       avatar: `/logo/${filenameLogo}`,
-      avatar: `/capa/${filenameCapa}`,
+      capa: `/capa/${filenameCapa}`,
       endereco: req.body.endereco,
       termos: "S",
+      numero: req.body.numero,
+      complemento: req.body.complemento,
+      cidade: req.body.cidade,
+      estado: req.body.estado,
+      bairro: req.body.bairro,
       id_user: novoUsuario.id_user,
     });
 
@@ -87,6 +96,38 @@ const cadastrarUsuario = async (req, res, next) => {
       id_user: novoUsuario.id_user,
     });
 
+    const htmlFilePath = path.join(__dirname, "../template/aviso/cliente.html");
+    let htmlContent = await fs.readFile(htmlFilePath, "utf8");
+
+    htmlContent = htmlContent
+      .replace("{{nome}}", novoUsuario.nome)
+      .replace("{{email}}", novoUsuario.email);
+
+    const transporter = nodemailer.createTransport({
+      host: process.env.EMAIL_HOST,
+      port: process.env.EMAIL_PORT,
+      secure: true,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+      tls: {
+        ciphers: "TLSv1",
+      },
+    });
+
+    let email = novoUsuario.email;
+
+    let mailOptions = {
+      from: `"Atendimento Zonu" ${process.env.EMAIL_FROM}`,
+      to: email,
+      subject: "✅ Conta criada com sucesso!",
+      html: htmlContent,
+    };
+
+    let info = await transporter.sendMail(mailOptions);
+    console.log("Mensagem enviada: %s", info.messageId);
+
     const response = {
       mensagem: "Usuário cadastrado com sucesso",
       usuarioCriado: {
@@ -99,16 +140,12 @@ const cadastrarUsuario = async (req, res, next) => {
         cnpj: novoperfil.cnpj,
         token_unico: tokenUsuario.token,
         code: code.code,
-        request: {
-          tipo: "GET",
-          descricao: "Pesquisar um usuário",
-          url: `https://trustchecker.com.br/api/usuarios/${novoUsuario.id_user}`,
-        },
       },
     };
 
     return res.status(202).send(response);
   } catch (error) {
+    console.log(error);
     return res.status(500).send({ error: error.message });
   }
 };
@@ -239,7 +276,7 @@ const atualizarUsuario = async (req, res, next) => {
   }
 };
 
-const atualizarStatusUsuario = async (req, res, next) => {
+const atualizarStatusUsuario = async (req, res, next) => {  
   try {
     const usuario = await User.findByPk(req.body.id_user);
     if (!usuario) {
@@ -256,6 +293,49 @@ const atualizarStatusUsuario = async (req, res, next) => {
   }
 };
 
+const atualizarDadosUsuario = async (req, res, next) => {
+  const t = await sequelize.transaction();
+  try {
+    const usuario = await User.findByPk(req.body.id_user, { transaction: t });
+    const perfil = await Perfil.findByPk(req.body.id_user, { transaction: t });
+
+    if (!usuario) {
+      return res.status(404).send({ message: "Usuário não encontrado" });
+    }
+
+    if (!perfil) {
+      return res.status(404).send({ message: "Perfil não encontrado" });
+    }
+
+    usuario.nome = req.body.nome;
+    usuario.sobrenome = req.body.sobrenome;
+    usuario.email = req.body.email;
+
+    perfil.razao_social = req.body.razao_social;
+    perfil.cnpj = req.body.cnpj;
+    perfil.telefone = req.body.telefone;
+    perfil.cep = req.body.cep;
+    perfil.endereco = req.body.endereco;
+    perfil.numero = req.body.numero;
+    perfil.complemento = req.body.complemento;
+    perfil.cidade = req.body.cidade;
+    perfil.estado = req.body.estado;
+    perfil.bairro = req.body.bairro;
+
+    await usuario.save({ transaction: t });
+    await perfil.save({ transaction: t });
+
+    await t.commit();
+
+    return res
+      .status(200)
+      .send({ mensagem: "Dados de usuário alterados com sucesso!" });
+  } catch (error) {
+    await t.rollback();
+    return res.status(500).send({ error: error.message });
+  }
+};
+
 const trocaSenha = async (req, res, next) => {
   try {
     const userId = req.params.id_user;
@@ -266,7 +346,7 @@ const trocaSenha = async (req, res, next) => {
     }
 
     const usuario = await User.findByPk(userId);
-    
+
     // Verifica se o usuário foi encontrado
     if (!usuario) {
       return res.status(404).send({ message: "Usuário não encontrado" });
@@ -284,8 +364,6 @@ const trocaSenha = async (req, res, next) => {
     return res.status(500).send({ error: error.message });
   }
 };
-
-
 
 const excluirUsuario = async (req, res, next) => {
   try {
@@ -310,8 +388,6 @@ const excluirUsuario = async (req, res, next) => {
   }
 };
 
-
-
 module.exports = {
   obterUsuarios,
   obterUsuarioPorId,
@@ -321,4 +397,5 @@ module.exports = {
   cadastrarUsuarioSimple,
   trocaSenha,
   atualizarStatusUsuario,
+  atualizarDadosUsuario,
 };

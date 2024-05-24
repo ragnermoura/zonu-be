@@ -4,7 +4,7 @@ const router = express.Router();
 const caracteristicaController = require("../controllers/caracteristicaController");
 
 router.get("/", caracteristicaController.obterCaracteristicas);
-router.get("/:id_caracteristica", caracteristicaController.obterCaracteristicaPorId);
+router.get("/user/:id_user", caracteristicaController.obterCaracteristicaPorId);
 router.post("/cadastro", caracteristicaController.criarCaracteristica);
 router.put("/:id_caracteristica", caracteristicaController.atualizarCaracteristica);
 router.delete("/delete/:id_caracteristica", caracteristicaController.deletarCaracteristica);

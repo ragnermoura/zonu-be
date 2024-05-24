@@ -1,4 +1,4 @@
-const Progressao = require('../models/tb_progressao');
+const Progressao = require("../models/tb_progressao");
 
 const progressaoController = {
   // Criar uma nova progressão
@@ -10,12 +10,14 @@ const progressaoController = {
         logo_capa,
         imovel,
         publicacao,
-        id_user
+        id_user,
       });
       res.status(201).send(novaProgressao);
     } catch (error) {
       console.error("Erro ao criar progressão:", error);
-      res.status(500).send({ mensagem: "Erro ao criar progressão", error: error.message });
+      res
+        .status(500)
+        .send({ mensagem: "Erro ao criar progressão", error: error.message });
     }
   },
 
@@ -26,7 +28,9 @@ const progressaoController = {
       res.status(200).send(progressoes);
     } catch (error) {
       console.error("Erro ao buscar progressões:", error);
-      res.status(500).send({ mensagem: "Erro ao buscar progressões", error: error.message });
+      res
+        .status(500)
+        .send({ mensagem: "Erro ao buscar progressões", error: error.message });
     }
   },
 
@@ -41,31 +45,27 @@ const progressaoController = {
       }
     } catch (error) {
       console.error("Erro ao buscar progressão:", error);
-      res.status(500).send({ mensagem: "Erro ao buscar progressão", error: error.message });
+      res
+        .status(500)
+        .send({ mensagem: "Erro ao buscar progressão", error: error.message });
     }
   },
 
   // Atualizar uma progressão
   atualizarProgressao: async (req, res) => {
     try {
-      const { perfil, logo_capa, imovel, publicacao } = req.body;
-      const progressaoAtualizada = await Progressao.update({
-        perfil,
-        logo_capa,
-        imovel,
-        publicacao
-      }, {
-        where: { id_progressao: req.params.id }
-      });
-
-      if (progressaoAtualizada) {
-        res.send({ mensagem: "Progressão atualizada com sucesso!" });
-      } else {
-        res.status(404).send({ mensagem: "Progressão não encontrada" });
+      const progresso = await Progressao.findByPk(req.body.id_progressao);
+      if (!progresso) {
+        return res.status(404).send({ message: "Progresso não encontrado" });
       }
+
+      await progresso.update(req.body);
+
+      return res
+        .status(201)
+        .send({ mensagem: "Dados do progresso alterados com sucesso!" });
     } catch (error) {
-      console.error("Erro ao atualizar progressão:", error);
-      res.status(500).send({ mensagem: "Erro ao atualizar progressão", error: error.message });
+      return res.status(500).send({ error: error.message });
     }
   },
 
@@ -73,18 +73,22 @@ const progressaoController = {
   deletarProgressao: async (req, res) => {
     try {
       const resultado = await Progressao.destroy({
-        where: { id_progressao: req.params.id }
+        where: { id_progressao: req.params.id },
       });
       if (resultado) {
         res.send({ mensagem: "Progressão deletada com sucesso!" });
       } else {
-        res.status(404).send({ mensagem: "Progressão não encontrada para deletar" });
+        res
+          .status(404)
+          .send({ mensagem: "Progressão não encontrada para deletar" });
       }
     } catch (error) {
       console.error("Erro ao deletar progressão:", error);
-      res.status(500).send({ mensagem: "Erro ao deletar progressão", error: error.message });
+      res
+        .status(500)
+        .send({ mensagem: "Erro ao deletar progressão", error: error.message });
     }
-  }
+  },
 };
 
 module.exports = progressaoController;

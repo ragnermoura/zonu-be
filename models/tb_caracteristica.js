@@ -25,5 +25,10 @@ Caracteristica.belongsTo(Usuario, {
     foreignKeyConstraint: true,
 });
 
+Usuario.hasMany(Caracteristica, {
+    foreignKey: "id_user",
+    constraints: true,
+});
+
 
 module.exports = Caracteristica;
