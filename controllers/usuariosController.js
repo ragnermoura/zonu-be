@@ -258,7 +258,7 @@ const obterUsuarioPorId = async (req, res, next) => {
 
 const obterUsuarioPorEmail = async (req, res, next) => {
   try {
-    const { email } = req.body; // Assumindo que o email vem no corpo da requisição
+    const { email } = req.body;
     const usuario = await User.findOne({ where: { email: email } });
     if (!usuario) {
       return res.status(404).send({ message: "Usuário não encontrado" });
@@ -378,6 +378,36 @@ const trocaSenha = async (req, res, next) => {
   }
 };
 
+const trocaSenhaporEmail = async (req, res, next) => {
+  try {
+    const { email, senha } = req.body;
+
+    // Verifica se o email foi fornecido
+    if (!email) {
+      return res.status(400).send({ message: "Email não fornecido" });
+    }
+
+    const usuario = await User.findOne({ where: { email: email } });
+
+    // Verifica se o usuário foi encontrado
+    if (!usuario) {
+      return res.status(404).send({ message: "Usuário não encontrado" });
+    }
+
+    // Atualiza a senha do usuário
+    const hashedPassword = await bcrypt.hash(senha, 10);
+    usuario.senha = hashedPassword;
+
+    // Salva as alterações no usuário
+    await usuario.save();
+
+    return res.status(200).send({ mensagem: "Senha alterada com sucesso!" });
+  } catch (error) {
+    return res.status(500).send({ error: error.message });
+  }
+};
+
+
 const excluirUsuario = async (req, res, next) => {
   try {
     const id_user = req.params.id_user;
@@ -405,6 +435,7 @@ module.exports = {
   obterUsuarios,
   obterUsuarioPorId,
   obterUsuarioPorEmail,
+  trocaSenhaporEmail,
   atualizarUsuario,
   excluirUsuario,
   cadastrarUsuario,
