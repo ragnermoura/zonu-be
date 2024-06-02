@@ -256,6 +256,19 @@ const obterUsuarioPorId = async (req, res, next) => {
   }
 };
 
+const obterUsuarioPorEmail = async (req, res, next) => {
+  try {
+    const { email } = req.body; // Assumindo que o email vem no corpo da requisição
+    const usuario = await User.findOne({ where: { email: email } });
+    if (!usuario) {
+      return res.status(404).send({ message: "Usuário não encontrado" });
+    }
+    return res.status(200).send({ response: usuario });
+  } catch (error) {
+    return res.status(500).send({ error: error.message });
+  }
+};
+
 const atualizarUsuario = async (req, res, next) => {
   try {
     const usuario = await User.findByPk(req.body.id_user);
@@ -391,6 +404,7 @@ const excluirUsuario = async (req, res, next) => {
 module.exports = {
   obterUsuarios,
   obterUsuarioPorId,
+  obterUsuarioPorEmail,
   atualizarUsuario,
   excluirUsuario,
   cadastrarUsuario,
