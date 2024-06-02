@@ -66,7 +66,7 @@ const enviarAvisoAdmin = async (req, res) => {
             },
         });
 
-        let emailAdmin = 'delayproducoes@gmail.com'
+        let emailAdmin = 'cadastro@zonu.com.br'
 
         let mailOptions = {
             from: `"Equipe Zonu" ${process.env.EMAIL_FROM}`,
