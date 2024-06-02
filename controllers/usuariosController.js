@@ -263,7 +263,7 @@ const obterUsuarioPorEmail = async (req, res, next) => {
     if (!usuario) {
       return res.status(404).send({ message: "Usuário não encontrado" });
     }
-    return res.status(200).send({ response: usuario });
+    return res.status(200).send({ response: { id_user: usuario.id_user } });
   } catch (error) {
     return res.status(500).send({ error: error.message });
   }
