@@ -397,8 +397,41 @@ const trocaSenhaporEmail = async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(senha, 10);
     usuario.senha = hashedPassword;
 
+    const htmlFilePath = path.join(__dirname, "../template/auth/senha.html");
+    let htmlContent = await fs.readFile(htmlFilePath, "utf8");
+
+    htmlContent = htmlContent
+      .replace("{{email}}", usuario.email);
+
+    const transporter = nodemailer.createTransport({
+      host: process.env.EMAIL_HOST,
+      port: process.env.EMAIL_PORT,
+      secure: true,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+      tls: {
+        ciphers: "TLSv1",
+      },
+    });
+
+
+    let mailOptions = {
+      from: `"Equipe Zonu" ${process.env.EMAIL_FROM}`,
+      to: email,
+      subject: "🔒 Senha alterada com sucesso!",
+      html: htmlContent,
+    };
+
+    let info = await transporter.sendMail(mailOptions);
+    console.log("Mensagem enviada: %s", info.messageId);
+
+
     // Salva as alterações no usuário
     await usuario.save();
+
+
 
     return res.status(200).send({ mensagem: "Senha alterada com sucesso!" });
   } catch (error) {
