@@ -380,14 +380,14 @@ const trocaSenha = async (req, res, next) => {
 
 const trocaSenhaporEmail = async (req, res, next) => {
   try {
-    const { email, senha } = req.body;
+    const email = req.params.email;
 
-    // Verifica se o email foi fornecido
+    // Verifica se o ID do usuário é válido
     if (!email) {
-      return res.status(400).send({ message: "Email não fornecido" });
+      return res.status(400).send({ message: "ID do usuário não fornecido" });
     }
 
-    const usuario = await User.findOne({ where: { email: email } });
+    const usuario = await User.findOne(email);
 
     // Verifica se o usuário foi encontrado
     if (!usuario) {
@@ -395,7 +395,7 @@ const trocaSenhaporEmail = async (req, res, next) => {
     }
 
     // Atualiza a senha do usuário
-    const hashedPassword = await bcrypt.hash(senha, 10);
+    const hashedPassword = await bcrypt.hash(req.body.senha, 10);
     usuario.senha = hashedPassword;
 
     // Salva as alterações no usuário
