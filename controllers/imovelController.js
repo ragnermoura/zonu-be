@@ -129,7 +129,7 @@ const criarImovel = async (req, res) => {
     const NovoImovel = await Imovel.create({
       id_info: tabInfo.id_info,
       tem_condominio: req.body.tem_condominio,
-      id_condominio: req.body.id_condominio,
+      id_condominio: req.body.id_condominio || null,
       id_proprietario: req.body.id_user,
       id_comodos: tabComodos.id_comodos,
       id_medidas: tabMedidas.id_medidas,

@@ -11,7 +11,7 @@ const Condominio = conn.define("tb_condominio", {
   },
   nome_condominio: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   id_user: {
     type: DataTypes.INTEGER,
