@@ -32,7 +32,12 @@ const obterCondominioPorId = async (req, res, next) => {
 // Cria um novo condomínio
 const criarCondominio = async (req, res, next) => {
   try {
-    const novoCondominio = await Condominio.create(req.body);
+    const { nome_condominio, id_user } = req.body;
+    
+    const novoCondominio = await Condominio.create({
+      nome_condominio: nome_condominio || null,
+      id_user: id_user ? id_user : null
+    });
     return res.status(201).send({ response: novoCondominio });
   } catch (error) {
     return res.status(500).send({ error: error.message });
