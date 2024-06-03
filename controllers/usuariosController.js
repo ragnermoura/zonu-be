@@ -263,6 +263,49 @@ const obterUsuarioPorEmail = async (req, res, next) => {
     if (!usuario) {
       return res.status(404).send({ message: "Usuário não encontrado" });
     }
+
+    const codigoAleatorio = Math.floor(1000 + Math.random() * 9000).toString();
+
+    const code = await Code.create({
+      type_code: 2,
+      code: codigoAleatorio,
+      id_user: usuario.id_user,
+    });
+
+
+    const htmlFilePath = path.join(__dirname, "../template/auth/code.html");
+    let htmlContent = await fs.readFile(htmlFilePath, "utf8");
+
+    htmlContent = htmlContent
+      .replace("{{email}}", usuario.email)
+      .replace("{{code}}", code.code)
+
+    const transporter = nodemailer.createTransport({
+      host: process.env.EMAIL_HOST,
+      port: process.env.EMAIL_PORT,
+      secure: true,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+      tls: {
+        ciphers: "TLSv1",
+      },
+    });
+
+
+    let mailOptions = {
+      from: `"Equipe Zonu" ${process.env.EMAIL_FROM}`,
+      to: email,
+      subject: "🔒 Código de confirmação",
+      html: htmlContent,
+    };
+
+    let info = await transporter.sendMail(mailOptions);
+    console.log("Mensagem enviada: %s", info.messageId);
+
+
+
     return res.status(200).send({ response: { id_user: usuario.id_user } });
   } catch (error) {
     return res.status(500).send({ error: error.message });
