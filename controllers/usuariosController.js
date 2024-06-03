@@ -312,6 +312,30 @@ const obterUsuarioPorEmail = async (req, res, next) => {
   }
 };
 
+const validaCode = async (req, res, next) => {
+  try {
+    const { code } = req.body;
+
+    // Verifica se o código foi fornecido
+    if (!code) {
+      return res.status(400).send({ message: "Código não fornecido" });
+    }
+
+    // Busca o código na tabela
+    const codes = await Code.findOne({ where: { code: code } });
+
+    // Verifica se o código foi encontrado
+    if (!codes) {
+      return res.status(404).send({ message: "Código não encontrado" });
+    }
+
+    // Retorna o ID do usuário associado ao código
+    return res.status(200).send({ response: { id_user: codes.id_user } });
+  } catch (error) {
+    return res.status(500).send({ error: error.message });
+  }
+};
+
 const atualizarUsuario = async (req, res, next) => {
   try {
     const usuario = await User.findByPk(req.body.id_user);
@@ -508,6 +532,7 @@ const excluirUsuario = async (req, res, next) => {
 module.exports = {
   obterUsuarios,
   obterUsuarioPorId,
+  validaCode,
   obterUsuarioPorEmail,
   trocaSenhaporEmail,
   atualizarUsuario,
