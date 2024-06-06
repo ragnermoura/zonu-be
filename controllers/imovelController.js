@@ -61,12 +61,6 @@ const criarImovel = async (req, res) => {
       copa: req.body.copa,
     });
 
-    const tabMedidas = await Medidas.create({
-      area_contruida: req.body.area_contruida,
-      area_privativa: req.body.area_privativa,
-      area_total: req.body.area_total,
-    });
-
     const tabPreco = await Preco.create({
       tipo_negocio: req.body.tipo_negocio,
       preco_imovel: req.body.preco_imovel,
@@ -83,6 +77,17 @@ const criarImovel = async (req, res) => {
       aceita_permuta: req.body.aceita_permuta,
       descricao_permuta: req.body.descricao_permuta,
       valor_metro_quadrado: req.body.valor_metro_quadrado,
+    });
+
+    const precoImovel = parseFloat(req.body.preco_imovel);
+    const areaTotal = parseFloat(req.body.area_total);
+    const mediaMetroQuadrado = precoImovel / areaTotal;
+
+    const tabMedidas = await Medidas.create({
+      area_contruida: req.body.area_contruida,
+      area_privativa: req.body.area_privativa,
+      area_total: req.body.area_total,
+      media_metro_quadrado: mediaMetroQuadrado,
     });
 
     const tabLocalizacao = await Localizacao.create({
@@ -213,7 +218,6 @@ const criarImovel = async (req, res) => {
       id_imovel: NovoImovel.id_imovel,
     });
 
-
     const htmlFilePath = path.join(__dirname, "../template/imovel/index.html");
     let htmlContent = await fs.readFile(htmlFilePath, "utf8");
 
@@ -234,7 +238,6 @@ const criarImovel = async (req, res) => {
       },
     });
 
-  
     let mailOptions = {
       from: `"Equipe Zonu" ${process.env.EMAIL_FROM}`,
       to: req.body.email,
