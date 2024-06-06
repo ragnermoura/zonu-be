@@ -79,9 +79,9 @@ const criarImovel = async (req, res) => {
       valor_metro_quadrado: req.body.valor_metro_quadrado,
     });
 
-    const precoImovel = parseFloat(req.body.preco_imovel);
+    const precoImovel = parseFloat(tabPreco.preco_imovel);
     const areaTotal = parseFloat(req.body.area_total);
-    const mediaMetroQuadrado = precoImovel / areaTotal;
+    const mediaMetroQuadrado = (precoImovel / areaTotal).toFixed(2);
 
     const tabMedidas = await Medidas.create({
       area_contruida: req.body.area_contruida,

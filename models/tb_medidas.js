@@ -24,7 +24,7 @@ const Medidas = conn.define("tb_medidas", {
   },
 
   media_metro_quadrado: {
-    type: DataTypes.STRING,
+    type: DataTypes.DECIMAL(10, 2),
     allowNull: true,
   },
  
