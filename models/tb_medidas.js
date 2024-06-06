@@ -9,22 +9,22 @@ const Medidas = conn.define("tb_medidas", {
   },
   
   area_contruida: {
-    type: DataTypes.DECIMAL(10, 2),
+    type: DataTypes.STRING,
     allowNull: true,
   },
-  
+
   area_privativa: {
-    type: DataTypes.DECIMAL(10, 2),
+    type: DataTypes.STRING,
     allowNull: true,
   },
 
   area_total: {
-    type: DataTypes.DECIMAL(10, 2),
+    type: DataTypes.STRING,
     allowNull: true,
   },
 
   media_metro_quadrado: {
-    type: DataTypes.DECIMAL(10, 2),
+    type: DataTypes.STRING,
     allowNull: true,
   },
  
