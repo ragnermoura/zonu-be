@@ -12,7 +12,7 @@ const Preco = conn.define("tb_preco", {
     allowNull: true,
   },
   preco_imovel: {
-    type: DataTypes.STRING,
+    type: DataTypes.DECIMAL(10, 2),
     allowNull: true,
   },
   mostra_preco: {

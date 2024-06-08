@@ -79,14 +79,15 @@ const criarImovel = async (req, res) => {
       valor_metro_quadrado: req.body.valor_metro_quadrado,
     });
 
+    
     const precoImovel = parseFloat(tabPreco.preco_imovel);
     const areaTotal = parseFloat(req.body.area_total);
     const mediaMetroQuadrado = (precoImovel / areaTotal).toFixed(2);
 
     const tabMedidas = await Medidas.create({
-      area_contruida: req.body.area_contruida,
-      area_privativa: req.body.area_privativa,
-      area_total: req.body.area_total,
+      area_contruida: parseFloat(req.body.area_contruida.replace(',', '.')),
+      area_privativa: parseFloat(req.body.area_privativa.replace(',', '.')),
+      area_total: areaTotal,
       media_metro_quadrado: mediaMetroQuadrado,
     });
 
