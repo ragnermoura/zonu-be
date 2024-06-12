@@ -37,7 +37,11 @@ const progressaoController = {
   // Obter uma progressão pelo ID
   buscarProgressaoPorId: async (req, res) => {
     try {
-      const progressao = await Progressao.findByPk(req.params.id_user);
+      const progressao = await Progressao.findOne({
+        where: {
+          id_user: req.params.id_user,
+        },
+      });
       if (progressao) {
         res.status(200).send(progressao);
       } else {
@@ -54,7 +58,7 @@ const progressaoController = {
   // Atualizar uma progressão
   atualizarProgressao: async (req, res) => {
     try {
-      const progresso = await Progressao.findByPk(req.body.id_progressao);
+      const progresso = await Progressao.findByPk(req.body.id_user);
       if (!progresso) {
         return res.status(404).send({ message: "Progresso não encontrado" });
       }
