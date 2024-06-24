@@ -1,12 +1,15 @@
 const bcrypt = require("bcrypt");
 const { v4: uuidv4 } = require("uuid");
 const QRCode = require("qrcode");
+
 const Code = require("../models/tb_code");
 const Token = require("../models/tb_token");
 const User = require("../models/tb_usuarios");
 const Perfil = require("../models/tb_perfil");
 const Progress = require("../models/tb_progressao");
 const Qrcode = require("../models/tb_qrcode");
+const Imovel = require("../models/tb_imovel");
+const Condominio = require('../models/tb_condominio');
 
 const nodemailer = require("nodemailer");
 const path = require("path");
@@ -509,12 +512,14 @@ const trocaSenhaporEmail = async (req, res, next) => {
 const excluirUsuario = async (req, res, next) => {
   try {
     const id_user = req.params.id_user;
-    // Primeiro, deleta todas as entradas relacionadas
+    
     await Qrcode.destroy({ where: { id_user } });
     await Token.destroy({ where: { id_user } });
     await Code.destroy({ where: { id_user } });
     await Perfil.destroy({ where: { id_user } });
     await Progress.destroy({ where: { id_user } });
+    await Imovel.destroy({ where: { id_user } });
+    await Condominio.destroy({ where: { id_user } });
 
     // Depois, tenta deletar o usuário
     const usuario = await User.findByPk(id_user);
