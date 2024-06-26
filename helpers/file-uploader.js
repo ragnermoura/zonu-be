@@ -23,7 +23,7 @@ const storage = multer.diskStorage({
 
 // Configuração de filtragem de arquivos
 const fileFilter = (req, file, cb) => {
-    if (!file.originalname.match(/\.(png|jpg|jpeg)$/)) {
+    if (!file.originalname.match(/\.(png|jpg|jpeg|webp)$/)) {
         return cb(new Error("Por favor, envie apenas png, jpg ou jpeg!"));
     }
     cb(undefined, true);
