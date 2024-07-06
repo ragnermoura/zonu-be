@@ -24,8 +24,15 @@ const obterNivelPorId = async (req, res, next) => {
 };
 const criarNivel = async (req, res, next) => {
   try {
-    const novoNivel = await Nivel.create(req.body);
-    return res.status(201).send({ response: novoNivel });
+    const dados = req.body;
+
+    if (Array.isArray(dados)) {
+      const novosNiveis = await Nivel.bulkCreate(dados);
+      return res.status(201).send({ response: novosNiveis });
+    } else {
+      const novoNivel = await Nivel.create(dados);
+      return res.status(201).send({ response: novoNivel });
+    }
   } catch (error) {
     return res.status(500).send({ error: error.message });
   }

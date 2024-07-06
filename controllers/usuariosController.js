@@ -9,12 +9,15 @@ const Perfil = require("../models/tb_perfil");
 const Progress = require("../models/tb_progressao");
 const Qrcode = require("../models/tb_qrcode");
 const Imovel = require("../models/tb_imovel");
-const Condominio = require('../models/tb_condominio');
+const Condominio = require("../models/tb_condominio");
 
 const nodemailer = require("nodemailer");
 const path = require("path");
 const fs = require("fs").promises;
 require("dotenv").config();
+
+const geoip = require("geoip-lite");
+const moment = require("moment");
 
 const cadastrarUsuario = async (req, res, next) => {
   try {
@@ -48,8 +51,8 @@ const cadastrarUsuario = async (req, res, next) => {
       senha: hashedPassword,
       avatar: `/avatar/${filename}`,
       id_plano: req.body.id_plano,
-      id_status: req.body.status,
-      id_nivel: req.body.nivel,
+      id_status: 2,
+      id_nivel: 3,
     });
 
     const novoperfil = await Perfil.create({
@@ -173,8 +176,8 @@ const cadastrarUsuarioSimple = async (req, res, next) => {
       senha: hashedPassword,
       avatar: `/avatar/${filename}`,
       id_plano: req.body.id_plano,
-      id_status: req.body.status,
-      id_nivel: req.body.nivel,
+      id_status: 1,
+      id_nivel: 1,
     });
 
     const codigoAleatorio = Math.floor(1000 + Math.random() * 9000).toString();
@@ -201,11 +204,188 @@ const cadastrarUsuarioSimple = async (req, res, next) => {
 
     const progressStatus = await Progress.create({
       perfil: 1,
-      logo_capa: 0,
-      imovel: 0,
-      publicacao: 0,
+      logo_capa: 1,
+      imovel: 1,
+      publicacao: 1,
       id_user: novoUsuario.id_user,
     });
+
+    const userIp = req.ip;
+
+    const geo = geoip.lookup(userIp);
+    const location = geo
+      ? `${geo.city}, ${geo.region}, ${geo.country}`
+      : "Localização desconhecida";
+
+    const currentDate = moment().format("DD/MM/YYYY");
+    const currentTime = moment().format("HH:mm:ss");
+
+    const htmlFilePath = path.join(
+      __dirname,
+      "../template/boasvindas/administrador.html"
+    );
+    let htmlContent = await fs.readFile(htmlFilePath, "utf8");
+
+    htmlContent = htmlContent
+      .replace("{{nome}}", novoUsuario.nome)
+      .replace("{{email}}", novoUsuario.email)
+      .replace("{{localizacao}}", location)
+      .replace("{{enderecoIp}}", userIp)
+      .replace("{{data}}", currentDate)
+      .replace("{{hora}}", currentTime);
+
+    const transporter = nodemailer.createTransport({
+      host: process.env.EMAIL_HOST,
+      port: process.env.EMAIL_PORT,
+      secure: true,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+      tls: {
+        ciphers: "TLSv1",
+      },
+    });
+
+    let email = novoUsuario.email;
+
+    let mailOptions = {
+      from: `"Atendimento Zonu" ${process.env.EMAIL_FROM}`,
+      to: email,
+      subject: "✅ Bem-vindo Chefe!",
+      html: htmlContent,
+    };
+
+    let info = await transporter.sendMail(mailOptions);
+    console.log("Mensagem enviada: %s", info.messageId);
+
+    const response = {
+      mensagem: "Usuário cadastrado com sucesso",
+      usuarioCriado: {
+        id_user: novoUsuario.id_user,
+        nome: novoUsuario.nome,
+        email: novoUsuario.email,
+        nivel: novoUsuario.id_nivel,
+        token_unico: tokenUsuario.token,
+        code: code.code,
+        request: {
+          tipo: "GET",
+          descricao: "Pesquisar um usuário",
+          url: `https://trustchecker.com.br/api/usuarios/${novoUsuario.id_user}`,
+        },
+      },
+    };
+
+    return res.status(202).send(response);
+  } catch (error) {
+    return res.status(500).send({ error: error.message });
+  }
+};
+
+const cadastrarEquipeZonu = async (req, res, next) => {
+  try {
+    const filename = req.file ? req.file.filename : "default-avatar.png";
+    const usuarioExistente = await User.findOne({
+      where: { email: req.body.email },
+    });
+    if (usuarioExistente) {
+      return res.status(409).send({
+        mensagem: "Email já cadastrado, por favor insira um email diferente!",
+      });
+    }
+    const hashedPassword = await bcrypt.hash(req.body.senha, 10);
+
+    const novoUsuario = await User.create({
+      nome: req.body.nome,
+      sobrenome: req.body.sobrenome,
+      email: req.body.email,
+      senha: hashedPassword,
+      avatar: `/avatar/${filename}`,
+      id_status: req.body.status,
+      id_nivel: req.body.nivel,
+      id_plano: req.body.id_plano,
+    });
+
+    const codigoAleatorio = Math.floor(1000 + Math.random() * 9000).toString();
+
+    const code = await Code.create({
+      type_code: 1,
+      code: codigoAleatorio,
+      id_user: novoUsuario.id_user,
+    });
+
+    const tokenUsuario = await Token.create({
+      id_user: novoUsuario.id_user,
+      token: uuidv4(),
+    });
+
+    const qrData = "https://zonu.com.br/";
+    const qrCodeURL = await QRCode.toDataURL(qrData);
+
+    const novoQrcode = await Qrcode.create({
+      qrcode: qrCodeURL,
+      tipo: 2,
+      id_user: novoUsuario.id_user,
+    });
+
+    const progressStatus = await Progress.create({
+      perfil: 1,
+      logo_capa: 1,
+      imovel: 1,
+      publicacao: 1,
+      id_user: novoUsuario.id_user,
+    });
+
+    const userIp = req.ip;
+
+    const geo = geoip.lookup(userIp);
+    const location = geo
+      ? `${geo.city}, ${geo.region}, ${geo.country}`
+      : "Localização desconhecida";
+
+    const currentDate = moment().format("DD/MM/YYYY");
+    const currentTime = moment().format("HH:mm:ss");
+
+    if (novoUsuario.id_nivel == 2) {
+      const htmlFilePath = path.join(
+        __dirname,
+        "../template/boasvindas/suporte.html"
+      );
+      let htmlContent = await fs.readFile(htmlFilePath, "utf8");
+
+      htmlContent = htmlContent
+        .replace("{{nome}}", novoUsuario.nome)
+        .replace("{{email}}", novoUsuario.email)
+        .replace("{{localizacao}}", location)
+        .replace("{{enderecoIp}}", userIp)
+        .replace("{{data}}", currentDate)
+        .replace("{{hora}}", currentTime);
+
+      const transporter = nodemailer.createTransport({
+        host: process.env.EMAIL_HOST,
+        port: process.env.EMAIL_PORT,
+        secure: true,
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+        tls: {
+          ciphers: "TLSv1",
+        },
+      });
+
+      let email = novoUsuario.email;
+
+      let mailOptions = {
+        from: `"Atendimento Zonu" ${process.env.EMAIL_FROM}`,
+        to: email,
+        subject: "🚀 Bem-vindo ao Time!",
+        html: htmlContent,
+      };
+
+      let info = await transporter.sendMail(mailOptions);
+      console.log("Mensagem enviada ao suporte", info.messageId);
+    }
 
     const response = {
       mensagem: "Usuário cadastrado com sucesso",
@@ -275,13 +455,12 @@ const obterUsuarioPorEmail = async (req, res, next) => {
       id_user: usuario.id_user,
     });
 
-
     const htmlFilePath = path.join(__dirname, "../template/auth/code.html");
     let htmlContent = await fs.readFile(htmlFilePath, "utf8");
 
     htmlContent = htmlContent
       .replace("{{email}}", usuario.email)
-      .replace("{{code}}", code.code)
+      .replace("{{code}}", code.code);
 
     const transporter = nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
@@ -296,7 +475,6 @@ const obterUsuarioPorEmail = async (req, res, next) => {
       },
     });
 
-
     let mailOptions = {
       from: `"Equipe Zonu" ${process.env.EMAIL_FROM}`,
       to: email,
@@ -306,8 +484,6 @@ const obterUsuarioPorEmail = async (req, res, next) => {
 
     let info = await transporter.sendMail(mailOptions);
     console.log("Mensagem enviada: %s", info.messageId);
-
-
 
     return res.status(200).send({ response: { id_user: usuario.id_user } });
   } catch (error) {
@@ -359,7 +535,7 @@ const atualizarUsuario = async (req, res, next) => {
   }
 };
 
-const atualizarStatusUsuario = async (req, res, next) => {  
+const atualizarStatusUsuario = async (req, res, next) => {
   try {
     const usuario = await User.findByPk(req.body.id_user);
     if (!usuario) {
@@ -470,8 +646,7 @@ const trocaSenhaporEmail = async (req, res, next) => {
     const htmlFilePath = path.join(__dirname, "../template/auth/senha.html");
     let htmlContent = await fs.readFile(htmlFilePath, "utf8");
 
-    htmlContent = htmlContent
-      .replace("{{email}}", usuario.email);
+    htmlContent = htmlContent.replace("{{email}}", usuario.email);
 
     const transporter = nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
@@ -486,7 +661,6 @@ const trocaSenhaporEmail = async (req, res, next) => {
       },
     });
 
-
     let mailOptions = {
       from: `"Equipe Zonu" ${process.env.EMAIL_FROM}`,
       to: email,
@@ -497,11 +671,8 @@ const trocaSenhaporEmail = async (req, res, next) => {
     let info = await transporter.sendMail(mailOptions);
     console.log("Mensagem enviada: %s", info.messageId);
 
-
     // Salva as alterações no usuário
     await usuario.save();
-
-
 
     return res.status(200).send({ mensagem: "Senha alterada com sucesso!" });
   } catch (error) {
@@ -512,7 +683,7 @@ const trocaSenhaporEmail = async (req, res, next) => {
 const excluirUsuario = async (req, res, next) => {
   try {
     const id_user = req.params.id_user;
-    
+
     await Qrcode.destroy({ where: { id_user } });
     await Token.destroy({ where: { id_user } });
     await Code.destroy({ where: { id_user } });
@@ -544,6 +715,7 @@ module.exports = {
   excluirUsuario,
   cadastrarUsuario,
   cadastrarUsuarioSimple,
+  cadastrarEquipeZonu,
   trocaSenha,
   atualizarStatusUsuario,
   atualizarDadosUsuario,

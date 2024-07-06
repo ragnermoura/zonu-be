@@ -5,9 +5,9 @@ const planosController = require("../controllers/planoController");
 
 router.get("/", planosController.buscarTodosPlanos);
 router.post("/cadastrar", planosController.criarPlano);
-router.get("/buscar/:id_plano", planosController.buscarPlanoPorId);
-router.put("/edit/:id_plano", planosController.atualizarPlano);
-router.delete("/delete/:id_plano", planosController.deletarPlano);
+router.get("/buscar/:id", planosController.buscarPlanoPorId);
+router.put("/edit/:id", planosController.atualizarPlano);
+router.delete("/delete/:id", planosController.deletarPlano);
 
 
 /**

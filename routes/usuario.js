@@ -14,7 +14,8 @@ router.post('/verifica-email', userController.obterUsuarioPorEmail);
 router.put('/edit/trocar-senha', userController.trocaSenhaporEmail);
 router.post('/valida-code', userController.validaCode);
 router.post("/cadastro", uploadFields, userController.cadastrarUsuario);
-router.post("/cadastro-simples", uploadFields, userController.cadastrarUsuarioSimple);
+router.post("/cadastro-administrador", uploadFields, userController.cadastrarUsuarioSimple);
+router.post("/cadastro-equipe", uploadFields, userController.cadastrarEquipeZonu);
 
 
 module.exports = router;

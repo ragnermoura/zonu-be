@@ -52,7 +52,8 @@ const Ticket = conn.define("tb_ticket", {
 
 Ticket.belongsTo(User, {
     foreignKey: "id_user",
-    as: "usuario"
+    as: "usuario",
+    foreignKeyConstraint: true,
   });
 
 module.exports = Ticket;

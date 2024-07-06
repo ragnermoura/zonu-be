@@ -2,8 +2,15 @@ const Status = require('../models/tb_status');
 
 const criarStatus = async (req, res, next) => {
   try {
-    const novoStatus = await Status.create(req.body);
-    return res.status(201).send({ response: novoStatus });
+    const dados = req.body;
+
+    if (Array.isArray(dados)) {
+      const novosStatus = await Status.bulkCreate(dados);
+      return res.status(201).send({ response: novosStatus });
+    } else {
+      const novoStatus = await Status.create(dados);
+      return res.status(201).send({ response: novoStatus });
+    }
   } catch (error) {
     return res.status(500).send({ error: error.message });
   }
